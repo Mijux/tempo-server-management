@@ -1,0 +1,130 @@
+
+digraph structs {
+
+
+rankdir="LR"
+
+
+node [shape=none]
+
+day [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>day</B></TD>
+                </TR>
+            
+                <TR>
+                    <TD PORT="date_to">🔑</TD>
+                    <TD PORT="date_from">date</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="id_pricing_to">&nbsp;</TD>
+                    <TD PORT="id_pricing_from">id_pricing</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="conso_hc_to">&nbsp;</TD>
+                    <TD PORT="conso_hc_from">conso_hc</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="conso_hp_to">&nbsp;</TD>
+                    <TD PORT="conso_hp_from">conso_hp</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+derogation [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>derogation</B></TD>
+                </TR>
+            
+                <TR>
+                    <TD PORT="id_user_to">🔑</TD>
+                    <TD PORT="id_user_from">id_user</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="date_to">🔑</TD>
+                    <TD PORT="date_from">date</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+pricing [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>pricing</B></TD>
+                </TR>
+            
+                <TR>
+                    <TD PORT="id_to">🔑</TD>
+                    <TD PORT="id_from">id</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="color_to">&nbsp;</TD>
+                    <TD PORT="color_from">color</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="hc_to">&nbsp;</TD>
+                    <TD PORT="hc_from">hc</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="hp_to">&nbsp;</TD>
+                    <TD PORT="hp_from">hp</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+user [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>user</B></TD>
+                </TR>
+            
+                <TR>
+                    <TD PORT="id_to">🔑</TD>
+                    <TD PORT="id_from">id</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="username_to">&nbsp;</TD>
+                    <TD PORT="username_from">username</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="avatar_to">&nbsp;</TD>
+                    <TD PORT="avatar_from">avatar</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="permission_level_to">&nbsp;</TD>
+                    <TD PORT="permission_level_from">permission_level</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+derogation:date_from:e -> day:date_to:w
+derogation:id_user_from:e -> user:id_to:w
+day:id_pricing_from:e -> pricing:id_to:w
+
+}
