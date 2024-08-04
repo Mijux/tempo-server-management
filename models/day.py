@@ -9,6 +9,7 @@ from uuid import uuid4
 from models.base import Base
 from models.derogation import Derogation
 
+
 class Day(Base):
     __tablename__ = "day"
 
@@ -16,7 +17,7 @@ class Day(Base):
     id_pricing: Mapped[UUID] = mapped_column(ForeignKey("pricing.id"), nullable=False)
     conso_hc: Mapped[float] = mapped_column(Float, nullable=True)
     conso_hp: Mapped[float] = mapped_column(Float, nullable=True)
-    
+
     derogations: Mapped[List["Derogation"]] = relationship()
 
     def __repr__(self) -> str:
