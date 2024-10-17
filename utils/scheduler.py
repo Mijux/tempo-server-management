@@ -5,6 +5,9 @@ import schedule
 from datetime import date, timedelta
 
 from api.tempo_day import TempoAPI
+from models.day import Day
+from utils.db.day import add_day
+from utils.dbconn import get_session
 
 
 def register_schedules():
@@ -23,12 +26,23 @@ def register_schedules():
 
 
 def retrieve_next_day_color(exec_hour):
-    next_day = date.today() + timedelta(days=1)
-    day_data = TempoAPI.get_day(str(next_day))
+    next_day: date = date.today() + timedelta(days=1)
+    day_data = TempoAPI.get_day(next_day.strftime("%Y-%m-%d"))
 
-    # TODO must add data to database
-    # TODO if exec_hour is 20:05 so check database first to check data and request api only if this day is not filed
-    #       if exec_hour is 12:05 - do request and update database in consequence
+    if day_data.get("codeJour") == 0:
+        print(f"> Le code du jour suivant {day_data.get('dateJour')} est inconnu")
+    else:
+        with get_session() as db_session:
+
+            has_day = (
+                db_session.query(Day)
+                .filter(Day.date == day_data.get("dateJour"))
+                .first()
+            )
+
+            if not has_day():
+                add_day(db_session, day_data)
+            db_session.commit()
 
 
 def server_life_cycle_management():

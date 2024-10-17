@@ -3,11 +3,12 @@
 from api.tempo_day import TempoAPI
 
 from utils.dbconn import init_db
-from utils.db.pricing import init_table
-from utils.scheduler import retrieve_next_day_color
+from utils.db.pricing import init_pricing_table
+from utils.db.day import init_day_table
+from utils.scheduler import register_schedules
 
 init_db()
-init_table()
+init_pricing_table()
+init_day_table()
 
-
-retrieve_next_day_color("11:05")
+register_schedules()

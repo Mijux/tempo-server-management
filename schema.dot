@@ -66,14 +66,20 @@ pricing [label=<
                 </TR>
             
                 <TR>
-                    <TD PORT="id_to">🔑</TD>
-                    <TD PORT="id_from">id</TD>
+                    <TD PORT="period_end_to">🔑</TD>
+                    <TD PORT="period_end_from">period_end</TD>
                 </TR>
             
 
                 <TR>
-                    <TD PORT="color_to">&nbsp;</TD>
+                    <TD PORT="color_to">🔑</TD>
                     <TD PORT="color_from">color</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="id_to">&nbsp;</TD>
+                    <TD PORT="id_from">id</TD>
                 </TR>
             
 
@@ -118,6 +124,18 @@ user [label=<
                 <TR>
                     <TD PORT="permission_level_to">&nbsp;</TD>
                     <TD PORT="permission_level_from">permission_level</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="arrival_date_to">&nbsp;</TD>
+                    <TD PORT="arrival_date_from">arrival_date</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="leave_date_to">&nbsp;</TD>
+                    <TD PORT="leave_date_from">leave_date</TD>
                 </TR>
             
             </TABLE>

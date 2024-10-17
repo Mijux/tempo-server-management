@@ -9,6 +9,7 @@ from uuid import uuid4
 from models.base import Base
 from models.derogation import Derogation
 
+
 class User(Base):
     __tablename__ = "user"
 
@@ -16,6 +17,8 @@ class User(Base):
     username: Mapped[str] = mapped_column(String, nullable=False)
     avatar: Mapped[str] = mapped_column(String, nullable=False)
     permission_level: Mapped[int] = mapped_column(Integer, nullable=False)
+    arrival_date: Mapped[str] = mapped_column(String, nullable=False)
+    leave_date: Mapped[str] = mapped_column(String, nullable=True)
 
     derogations: Mapped[List["Derogation"]] = relationship()
 
