@@ -13,7 +13,7 @@ from models.day import Day
 class Pricing(Base):
     __tablename__ = "pricing"
 
-    period_end: Mapped[str] = mapped_column(String, nullable=True, primary_key=True)
+    period: Mapped[str] = mapped_column(String, nullable=True, primary_key=True)
     color: Mapped[int] = mapped_column(Integer, nullable=False, primary_key=True)
     id: Mapped[UUID] = mapped_column(UUID, default=uuid4, unique=True)
     hc: Mapped[float] = mapped_column(Float, nullable=False)

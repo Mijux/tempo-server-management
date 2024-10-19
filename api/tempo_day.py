@@ -2,20 +2,21 @@
 
 from requests import get as rget
 from re import match
+from os import getenv
 from os.path import join
 
 
 class TempoAPI:
 
-    HOST = "https://www.api-couleur-tempo.fr/api"
-    JOUR = "jourTempo"
-    JOURS = "joursTempo"
+    HOST = f"https://{getenv('HOST_TEMPO','www.api-couleur-tempo.fr')}/api"
+    DAY = "jourTempo"
+    DAYS = "joursTempo"
 
     DATE_REGEX = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 
     def get_day(date: str) -> dict | None:
         if match(TempoAPI.DATE_REGEX, date):
-            url = join(TempoAPI.HOST, TempoAPI.JOUR, date)
+            url = join(TempoAPI.HOST, TempoAPI.DAY, date)
             req = rget(url)
 
             if req.status_code == 200:
@@ -27,7 +28,7 @@ class TempoAPI:
             print(f"date must be in YYYY-MM-DD format, currently date was : {date}")
 
     def get_days(dates: list[str]) -> list | None:
-        url = join(TempoAPI.HOST, TempoAPI.JOURS) + "?"
+        url = join(TempoAPI.HOST, TempoAPI.DAYS) + "?"
         for date in dates:
             if match(TempoAPI.DATE_REGEX, date):
                 url += f"dateJour[]={date}&"
