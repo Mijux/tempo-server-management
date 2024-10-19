@@ -8,7 +8,7 @@ from os.path import join
 
 class TempoAPI:
 
-    HOST = f"https://{getenv('API_HOST_TEMPO','www.api-couleur-tempo.fr')}/api"
+    HOST = f"https://{getenv('HOST_TEMPO','www.api-couleur-tempo.fr')}/api"
     DAY = "jourTempo"
     DAYS = "joursTempo"
 

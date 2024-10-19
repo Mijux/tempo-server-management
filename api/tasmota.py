@@ -7,7 +7,7 @@ from requests import get as rget
 
 class TastomaAPI:
 
-    HOST = f"http://{getenv('API_HOST_TASMOTA','tasmota-plug.local')}"
+    HOST = f"http://{getenv('HOST_TASMOTA','tasmota-plug.local')}"
 
     def get_power_total() -> float:
         command = "EnergyTotal"
@@ -42,7 +42,8 @@ class TastomaAPI:
             print(f"Error when retrieve {url}")
             print(req.reason)
 
-    def power_on() -> bool:
+
+"""     def power_on() -> bool:
         command = "Power%20on"
         url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
         req = rget(url)
@@ -64,4 +65,4 @@ class TastomaAPI:
         else:
             print(f"Error when retrieve {url}")
             print(req.reason)
-            return False
+            return False """
