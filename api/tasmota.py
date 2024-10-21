@@ -4,6 +4,8 @@ from os import getenv
 from os.path import join
 from requests import get as rget
 
+from utils.logger import get_logger
+
 
 class TastomaAPI:
 
@@ -15,10 +17,12 @@ class TastomaAPI:
         req = rget(url)
 
         if req.status_code == 200:
-            return req.json().get("EnergyTotal").get("Total")
+            total_power = req.json().get("EnergyTotal").get("Total")
+            get_logger().info(f"EnergyTotal has been retrieved : {total_power}")
+            return total_power
         else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
+            get_logger().error(f"Cannot retrieve {url}")
+            get_logger().debug(req.reason)
 
     def get_power_yesterday() -> float:
         command = "EnergyYesterday"
@@ -26,10 +30,12 @@ class TastomaAPI:
         req = rget(url)
 
         if req.status_code == 200:
-            return req.json().get("EnergyYesterday").get("Yesterday")
+            yesterday_power = req.json().get("EnergyYesterday").get("Total")
+            get_logger().info(f"EnergyYesterday has been retrieved : {yesterday_power}")
+            return yesterday_power
         else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
+            get_logger().error(f"Cannot retrieve {url}")
+            get_logger().debug(req.reason)
 
     def get_power_today() -> float:
         command = "EnergyToday"
@@ -37,10 +43,12 @@ class TastomaAPI:
         req = rget(url)
 
         if req.status_code == 200:
-            return req.json().get("EnergyToday").get("Today")
+            today_power = req.json().get("EnergyToday").get("Total")
+            get_logger().info(f"EnergyToday has been retrieved : {today_power}")
+            return today_power
         else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
+            get_logger().error(f"Cannot retrieve {url}")
+            get_logger().debug(req.reason)
 
 
 """     def power_on() -> bool:

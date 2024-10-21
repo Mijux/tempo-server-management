@@ -5,6 +5,8 @@ from os.path import join
 from requests import post as rpost
 from wakeonlan import send_magic_packet
 
+from utils.logger import get_logger
+
 
 class ProxmoxAPI:
 
@@ -25,17 +27,19 @@ class ProxmoxAPI:
         url = join(ProxmoxAPI.HOST, endpoint)
 
         verify_ssl = False
-        if getenv("HOST_PROXMOX_SSL_VERIFY", "True") in ["true", "y", "1", "yes"]:
+        if getenv("HOST_PROXMOX_SSL_VERIFY", None) in ["true", "y", "1", "yes"]:
             verify_ssl = True
 
         req = rget(url, verify=verify_ssl, headers=headers, data=command)
 
         if req.status_code == 200:
+            get_logger().info("The server has been shutdown !")
             return True
         else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
+            get_logger().error("The server hasn't been shutdown")
+            get_logger().debug(req.reason)
             return False
 
     def power_on() -> bool:
+        get_logger().info("Try to wake up server and wait")
         send_magic_packet(ProxmoxAPI.HOST_MAC_ADDR)
