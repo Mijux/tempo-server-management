@@ -10,15 +10,30 @@ from utils.logger import get_logger
 
 class TempoAPI:
 
-    HOST = f"https://{getenv('HOST_TEMPO','www.api-couleur-tempo.fr')}/api"
+    HOST = None
+    HOST_BASE_URL = None
+
     DAY = "jourTempo"
     DAYS = "joursTempo"
-
     DATE_REGEX = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 
-    def get_day(date: str) -> dict | None:
+    def __init__(self):
+        correct = True
+        self.HOST = getenv("HOST_TEMPO", None)
+        if not self.HOST:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_TEMPO variable in your .env file"
+            )
+
+        self.HOST_BASE_URL = f"https://{self.HOST}/api"
+
+        if not correct:
+            exit(1)
+
+    def get_day(self, date: str) -> dict | None:
         if match(TempoAPI.DATE_REGEX, date):
-            url = join(TempoAPI.HOST, TempoAPI.DAY, date)
+            url = join(self.HOST_BASE_URL, TempoAPI.DAY, date)
             req = rget(url)
 
             if req.status_code == 200:
@@ -33,8 +48,8 @@ class TempoAPI:
 
         return None
 
-    def get_days(dates: list[str]) -> list | None:
-        url = join(TempoAPI.HOST, TempoAPI.DAYS) + "?"
+    def get_days(self, dates: list[str]) -> list | None:
+        url = join(self.HOST_BASE_URL, TempoAPI.DAYS) + "?"
         for date in dates:
             if match(TempoAPI.DATE_REGEX, date):
                 url += f"dateJour[]={date}&"

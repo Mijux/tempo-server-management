@@ -9,11 +9,26 @@ from utils.logger import get_logger
 
 class TastomaAPI:
 
-    HOST = f"http://{getenv('HOST_TASMOTA','tasmota-plug.local')}"
+    HOST = None
+    HOST_BASE_URL = None
 
-    def get_power_total() -> float:
+    def __init__(self):
+        correct = True
+        self.HOST = getenv("HOST_TASMOTA", None)
+        if not self.HOST:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_TASMOTA variable in your .env file"
+            )
+
+        self.HOST_BASE_URL = f"http://{self.HOST}"
+
+        if not correct:
+            exit(1)
+
+    def get_power_total(self) -> float:
         command = "EnergyTotal"
-        url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
+        url = join(self.HOST_BASE_URL, f"cm?cmnd={command}")
         req = rget(url)
 
         if req.status_code == 200:
@@ -24,9 +39,9 @@ class TastomaAPI:
             get_logger().error(f"Cannot retrieve {url}")
             get_logger().debug(req.reason)
 
-    def get_power_yesterday() -> float:
+    def get_power_yesterday(self) -> float:
         command = "EnergyYesterday"
-        url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
+        url = join(self.HOST_BASE_URL, f"cm?cmnd={command}")
         req = rget(url)
 
         if req.status_code == 200:
@@ -37,9 +52,9 @@ class TastomaAPI:
             get_logger().error(f"Cannot retrieve {url}")
             get_logger().debug(req.reason)
 
-    def get_power_today() -> float:
+    def get_power_today(self) -> float:
         command = "EnergyToday"
-        url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
+        url = join(self.HOST, f"cm?cmnd={command}")
         req = rget(url)
 
         if req.status_code == 200:
