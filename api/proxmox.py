@@ -13,28 +13,84 @@ from utils.logger import get_logger
 
 class ProxmoxAPI:
 
-    HOST = getenv("HOST_PROXMOX", "pve.local")
-    HOST_BASE_URL = f"https://{HOST}:8006"
-    HOST_MAC_ADDR = getenv("HOST_PROXMOX_MAC_ADDR", None)
-    TOKEN_ID = getenv("API_PROXMOX_TOKEN_ID", None)
-    TOKEN_SECRET = getenv("API_PROXMOX_TOKEN_SECRET", None)
+    HOST = None
+    HOST_BASE_URL = None
+    HOST_MAC_ADDR = None
+    TOKEN_ID = None
+    TOKEN_SECRET = None
 
-    def power_off() -> bool:
+    def __init__(self):
+        correct = True
+        self.HOST = getenv("HOST_PROXMOX", None)
+        if not self.HOST:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_PROXMOX variable in your .env file"
+            )
 
+        self.HOST_BASE_URL = f"https://{self.HOST}:8006"
+
+        self.HOST_MAC_ADDR = getenv("HOST_PROXMOX_MAC_ADDR", None)
+        if not self.HOST_MAC_ADDR:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_PROXMOX_MAC_ADDR in your .env file"
+            )
+
+        self.HOST_BOOT_TIMEOUT = getenv("HOST_PROXMOX_BOOT_TIMEOUT", None)
+        if not self.HOST_BOOT_TIMEOUT:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_PROXMOX_BOOT_TIMEOUT in your .env file"
+            )
+        else:
+            try:
+                self.HOST_BOOT_TIMEOUT = int(self.HOST_BOOT_TIMEOUT)
+            except:
+                correct = False
+                get_logger().error(
+                    "Please assign a integer value to HOST_PROXMOX_BOOT_TIMEOUT in your .env file"
+                )
+
+        host_proxmox_ssl_verify = getenv("HOST_PROXMOX_SSL_VERIFY", None)
+        if not host_proxmox_ssl_verify:
+            correct = False
+            get_logger().error(
+                "Please assign a value to HOST_PROXMOX_SSL_VERIFY in your .env file"
+            )
+        else:
+            self.HOST_SSL_VERIFY = False
+            if host_proxmox_ssl_verify in ["true", "y", "1", "yes"]:
+                self.HOST_SSL_VERIFY = True
+
+        self.TOKEN_ID = getenv("API_PROXMOX_TOKEN_ID", None)
+        if not self.TOKEN_ID:
+            correct = False
+            get_logger().error(
+                "Please assign a value to API_PROXMOX_TOKEN_ID in your .env file"
+            )
+
+        self.TOKEN_SECRET = getenv("API_PROXMOX_TOKEN_SECRET", None)
+        if not self.TOKEN_SECRET:
+            correct = False
+            get_logger().error(
+                "Please assign a value to API_PROXMOX_TOKEN_SECRET in your .env file"
+            )
+
+        if not correct:
+            exit(1)
+
+    def power_off(self) -> bool:
+        endpoint = "api2/json/nodes/rattler/status"
         command = "command=shutdown"
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": f"PVEAPIToken={ProxmoxAPI.TOKEN_ID}={ProxmoxAPI.TOKEN_SECRET}",
+            "Authorization": f"PVEAPIToken={self.TOKEN_ID}={self.TOKEN_SECRET}",
         }
 
-        endpoint = "api2/json/nodes/rattler/status"
-        url = join(ProxmoxAPI.HOST_BASE_URL, endpoint)
+        url = join(self.HOST_BASE_URL, endpoint)
 
-        verify_ssl = False
-        if getenv("HOST_PROXMOX_SSL_VERIFY", None) in ["true", "y", "1", "yes"]:
-            verify_ssl = True
-
-        req = rget(url, verify=verify_ssl, headers=headers, data=command)
+        req = rget(url, verify=self.HOST_SSL_VERIFY, headers=headers, data=command)
 
         if req.status_code == 200:
             get_logger().info("The server has been shutdown !")
@@ -44,15 +100,15 @@ class ProxmoxAPI:
             get_logger().debug(req.reason)
             return False
 
-    def power_on() -> bool:
+    def power_on(self) -> bool:
         get_logger().info("Try to wake up server and wait")
-        send_magic_packet(ProxmoxAPI.HOST_MAC_ADDR)
-        sleep(60)
+        send_magic_packet(self.HOST_MAC_ADDR)
+        sleep(self.HOST_BOOT_TIMEOUT)
 
         # Windows takes -n as argument and Linux takes -c
         param = "-n" if get_system_name().lower() == "windows" else "-c"
 
-        command = ["ping", param, "1", ProxmoxAPI.HOST]
+        command = ["ping", param, "1", self.HOST]
 
         if subcall(command) == 0:
             get_logger().info("Server has been power on successfully")

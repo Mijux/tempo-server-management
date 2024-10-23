@@ -19,4 +19,4 @@ if not test:
     register_schedules()
 else:
 
-    ProxmoxAPI.power_on()
+    ProxmoxAPI().power_on()
