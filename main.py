@@ -11,7 +11,7 @@ from utils.scheduler import register_schedules
 
 load_dotenv()
 
-test = True
+test = False
 if not test:
     init_db()
     init_pricing_table()

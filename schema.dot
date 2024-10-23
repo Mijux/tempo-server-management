@@ -66,8 +66,8 @@ pricing [label=<
                 </TR>
             
                 <TR>
-                    <TD PORT="period_end_to">🔑</TD>
-                    <TD PORT="period_end_from">period_end</TD>
+                    <TD PORT="period_to">🔑</TD>
+                    <TD PORT="period_from">period</TD>
                 </TR>
             
 

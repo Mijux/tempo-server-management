@@ -41,7 +41,7 @@ def register_schedules():
 
 def retrieve_next_day_color(exec_hour):
     next_day: date = date.today() + timedelta(days=1)
-    day_data = TempoAPI.get_day(next_day.strftime("%Y-%m-%d"))
+    day_data = TempoAPI().get_day(next_day.strftime("%Y-%m-%d"))
 
     if day_data.get("codeJour") == 0:
         get_logger().warning(
@@ -69,7 +69,7 @@ def server_life_cycle_management():
             get_logger().info(
                 "Next day is red and no derogation has been emitted : shutdown server"
             )
-            ProxmoxAPI.power_off()
+            ProxmoxAPI().power_off()
         else:
             get_logger().info(
                 f"Next day is red but has derogation emitted from {get_derogation_user()} : power on server"
@@ -77,4 +77,4 @@ def server_life_cycle_management():
     else:
         get_logger().info("Next day is not red: power on server")
 
-    ProxmoxAPI.power_on()
+    ProxmoxAPI().power_on()

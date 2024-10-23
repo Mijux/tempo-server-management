@@ -28,7 +28,7 @@ def init_day_table():
             date_list.append(date_itetator.strftime("%Y-%m-%d"))
             date_itetator += timedelta(days=1)
 
-        all_days_from_start = TempoAPI.get_days(date_list)
+        all_days_from_start = TempoAPI().get_days(date_list)
 
         print(all_days_from_start)
 
