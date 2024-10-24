@@ -2,12 +2,14 @@
 
 from datetime import datetime, date, timedelta
 from os import getenv
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from api.tempo_day import TempoAPI
 from models.day import Day
 from models.pricing import Pricing
 from utils.dbconn import get_session
+from utils.exceptions import DBPricingDoesNotExistError
 
 
 def init_day_table():
@@ -16,46 +18,57 @@ def init_day_table():
     today_date = date.today()
 
     with get_session() as db_session:
-
         days: List = db_session.query(Day).all()
-
         if len(days) == 0:
             print("> Day table has not been initialized")
 
-        date_list = []
-        date_itetator = start_date
-        while date_itetator <= today_date:
-            date_list.append(date_itetator.strftime("%Y-%m-%d"))
-            date_itetator += timedelta(days=1)
+    date_list = []
+    date_itetator = start_date
+    while date_itetator <= today_date:
+        date_list.append(date_itetator.strftime("%Y-%m-%d"))
+        date_itetator += timedelta(days=1)
 
-        all_days_from_start = TempoAPI().get_days(date_list)
+    all_days_from_start = TempoAPI().get_days(date_list)
 
-        print(all_days_from_start)
+    print(all_days_from_start)
 
-        for api_day in all_days_from_start:
-            add_day(db_session, api_day)
-
-        db_session.commit()
+    for api_day in all_days_from_start:
+        add_day_old(api_day)
 
 
-def add_day(session: Session, day: dict):
-    pricing: Pricing | None = (
-        session.query(Pricing)
-        .filter(
-            Pricing.color == day.get("codeJour"), Pricing.period == day.get("periode")
+# This function is used to fill first first days where we dont retrieve tasmota data
+def init_fill_power_consumption():
+    pass
+
+
+# This function is ised to fill day where tasmota data are missing. The power calculated is the average of all other days
+def fill_missing_consumption():
+    pass
+
+
+def add_day(day: dict):
+    with get_session() as db_session:
+        pricing: Pricing | None = (
+            db_session.query(Pricing)
+            .filter(
+                Pricing.color == day.get("codeJour"),
+                Pricing.period == day.get("periode"),
+            )
+            .first()
         )
-        .first()
-    )
 
-    if pricing:
-        day_exist: Day | None = (
-            session.query(Day).filter(Day.date == day.get("dateJour")).first()
-        )
-
-        if not day_exist:
-
-            day = Day(
+        if pricing:
+            new_day = Day(
                 date=day.get("dateJour"),
                 id_pricing=pricing.id,
             )
-            session.add(day)
+            db_session.add(day)
+
+            try:
+                db_session.commit()
+            except IntegrityError:
+                db_session.rollback()
+                raise DBDayAlreadyExistsError(day.get("dateJour"))
+
+        else:
+            raise DBPricingDoesNotExistError(day.get("codeJour"), day.get("periode"))
