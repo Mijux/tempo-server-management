@@ -4,7 +4,7 @@ import schedule
 
 from datetime import date, timedelta
 
-from api.proxmox import ProxmoxAPI
+from api.proxmox import ProxmoxAPI, ProxmoxStubAPI
 from api.tempo_day import TempoAPI
 from models.day import Day
 from utils.db.day import add_day
@@ -69,7 +69,11 @@ def server_life_cycle_management():
             get_logger().info(
                 "Next day is red and no derogation has been emitted : shutdown server"
             )
-            ProxmoxAPI().power_off()
+
+            if getenv("ENVIRONMENT", None).upper() == "PROD":
+                ProxmoxAPI().power_off()
+            else:
+                ProxmoxStubAPI().power_off()
         else:
             get_logger().info(
                 f"Next day is red but has derogation emitted from {get_derogation_user()} : power on server"
@@ -77,4 +81,7 @@ def server_life_cycle_management():
     else:
         get_logger().info("Next day is not red: power on server")
 
-    ProxmoxAPI().power_on()
+    if getenv("ENVIRONMENT", None).upper() == "PROD":
+        ProxmoxAPI().power_on()
+    else:
+        ProxmoxStubAPI().power_on()

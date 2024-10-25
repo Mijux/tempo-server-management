@@ -27,6 +27,8 @@ def add_user(user: dict) -> bool:
             db_session.rollback()
             raise DBUserAlreadyExistsError(user.get("id"), user.get("username"))
 
+    return True
+
 
 def remove_user(user_id: str) -> bool:
     with get_session() as db_session:
@@ -37,3 +39,5 @@ def remove_user(user_id: str) -> bool:
             db_session.commit()
         else:
             raise DBUserDoesNotExistError(user_id)
+
+    return True

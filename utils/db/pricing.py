@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from utils.dbconn import get_session
 from utils.exceptions import DBPricingInsertionError
+from utils.logger import get_logger
 
 
 def init_pricing_table():
@@ -17,12 +18,12 @@ def init_pricing_table():
         pricings: List = db_session.query(Pricing).all()
 
         if len(pricings) == 0:
-            print("> Pricing table has not been initialized")
+            get_logger().warning("Pricing table has not been initialized")
 
     with open(POWER_PRICE_PATH) as f:
         power_price = load(f)
         for period in power_price:
-            print(f"\t- Checking value for period {period}")
+            get_logger().info(f"Checking value for period {period}")
 
             for day_color in power_price[period]:
                 add_pricing(day_color, power_price[period][day_color], period)

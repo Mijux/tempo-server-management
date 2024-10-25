@@ -11,6 +11,19 @@ from wakeonlan import send_magic_packet
 from utils.logger import get_logger
 
 
+class ProxmoxStubAPI:
+
+    def __init__(self, poweroff_status=True, poweron_status=True):
+        self.poweroff_status = poweroff_status
+        self.poweron_status = poweron_status
+
+    def power_off(self) -> bool:
+        return self.poweroff_status
+
+    def power_on(self) -> bool:
+        return self.poweron_status
+
+
 class ProxmoxAPI:
 
     HOST = None

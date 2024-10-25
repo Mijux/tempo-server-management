@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 
 
-""" class SignatureException(Exception):
-    error_code = 403
-
-
-class GithubException(Exception):
-    error_code = 500
-
-
-class DeployException(Exception):
-    error_code = 500 """
-
-
 class ConfigurationException(Exception):
+    pass
+
+
+class DBError(Exception):
     pass
 
 
@@ -56,5 +48,31 @@ class DBDayAlreadyExistsError(Exception):
     def __init__(self, date):
         self.date = date
         self.err_msg = f"The day {date} already exists"
+
+        super().__init__(self.err_msg)
+
+
+class DBDayDoesNotExistError(Exception):
+    def __init__(self, date):
+        self.date = date
+        self.err_msg = f"The day {date} does not exist"
+
+        super().__init__(self.err_msg)
+
+
+class DBDerogationAlreadyExistsError(Exception):
+    def __init__(self, user_id, date):
+        self.id = user_id
+        self.date = date
+        self.err_msg = f"The derogation for {self.id} on {self.date} already exists"
+
+        super().__init__(self.err_msg)
+
+
+class DBDerogationDoesNotExistError(Exception):
+    def __init__(self, user_id="unknown", date="unknown"):
+        self.id = user_id
+        self.date = date
+        self.err_msg = f"The derogation for {self.id} on {self.date} does not exist"
 
         super().__init__(self.err_msg)
