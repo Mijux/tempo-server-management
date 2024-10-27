@@ -17,7 +17,7 @@ class EngineSingleton(metaclass=SingletonMeta):
         if not self.engine:
             if not engine_parameters:
                 engine_parameters = "sqlite:///database.db"
-            self.engine = create_engine(engine_parameters, echo=False)
+            self.engine = create_engine(engine_parameters, echo=True)
 
     def get_engine(self) -> Engine:
         return self.engine

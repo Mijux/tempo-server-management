@@ -26,14 +26,14 @@ day [label=<
             
 
                 <TR>
-                    <TD PORT="conso_hc_to">&nbsp;</TD>
-                    <TD PORT="conso_hc_from">conso_hc</TD>
+                    <TD PORT="consumption_offpeak_to">&nbsp;</TD>
+                    <TD PORT="consumption_offpeak_from">consumption_offpeak</TD>
                 </TR>
             
 
                 <TR>
-                    <TD PORT="conso_hp_to">&nbsp;</TD>
-                    <TD PORT="conso_hp_from">conso_hp</TD>
+                    <TD PORT="consumption_fullpeak_to">&nbsp;</TD>
+                    <TD PORT="consumption_fullpeak_from">consumption_fullpeak</TD>
                 </TR>
             
             </TABLE>
@@ -46,14 +46,72 @@ derogation [label=<
                 </TR>
             
                 <TR>
-                    <TD PORT="id_user_to">🔑</TD>
-                    <TD PORT="id_user_from">id_user</TD>
+                    <TD PORT="date_to">🔑</TD>
+                    <TD PORT="date_from">date</TD>
                 </TR>
             
 
                 <TR>
+                    <TD PORT="id_user_to">🔑</TD>
+                    <TD PORT="id_user_from">id_user</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+lastState [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>lastState</B></TD>
+                </TR>
+            
+                <TR>
                     <TD PORT="date_to">🔑</TD>
                     <TD PORT="date_from">date</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="time_to">🔑</TD>
+                    <TD PORT="time_from">time</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="consumption_to">&nbsp;</TD>
+                    <TD PORT="consumption_from">consumption</TD>
+                </TR>
+            
+            </TABLE>
+        >];
+        
+paymentSchedule [label=<
+            <TABLE BORDER="0" CELLSPACING="0" CELLBORDER="1">
+                <TR>
+                    <TD COLSPAN="2"><B>paymentSchedule</B></TD>
+                </TR>
+            
+                <TR>
+                    <TD PORT="user_id_to">🔑</TD>
+                    <TD PORT="user_id_from">user_id</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="year_to">🔑</TD>
+                    <TD PORT="year_from">year</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="amount_to">&nbsp;</TD>
+                    <TD PORT="amount_from">amount</TD>
+                </TR>
+            
+
+                <TR>
+                    <TD PORT="paid_to">&nbsp;</TD>
+                    <TD PORT="paid_from">paid</TD>
                 </TR>
             
             </TABLE>
@@ -141,8 +199,10 @@ user [label=<
             </TABLE>
         >];
         
-derogation:date_from:e -> day:date_to:w
+lastState:date_from:e -> day:date_to:w
 derogation:id_user_from:e -> user:id_to:w
+derogation:date_from:e -> day:date_to:w
+paymentSchedule:user_id_from:e -> user:id_to:w
 day:id_pricing_from:e -> pricing:id_to:w
 
 }

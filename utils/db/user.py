@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -32,12 +33,16 @@ def add_user(user: dict) -> bool:
 
 def remove_user(user_id: str) -> bool:
     with get_session() as db_session:
-        user_to_remove: User = db_session.query(User).filter(User.id == user_id).first()
+        user_to_remove: User | None = (
+            db_session.query(User).filter(User.id == user_id).first()
+        )
 
-        if user_to_remove:
-            db_session.delete(user_to_remove)
+        leave_date = datetime.now().strftime("%Y-%m-%d")
+
+        try:
+            user_to_remove.leave_date = leave_date
             db_session.commit()
-        else:
+        except:
             raise DBUserDoesNotExistError(user_id)
 
     return True

@@ -90,7 +90,7 @@ def init_fill_power_consumption():
                 day_to_fill.consumption_fullpeak = average_power_per_day * 2 / 3
                 power_to_dispatch -= day_to_fill.consumption_fullpeak
 
-        get_logger().info(f"{power_to_dispatch} were not dispatched")
+        get_logger().info(f"{abs(round(power_to_dispatch,4))} were not dispatched")
 
         try:
             db_session.commit()
