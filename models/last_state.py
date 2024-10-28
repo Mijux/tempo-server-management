@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from datetime import datetime
-from pytz import timezone
 from typing import List
 from sqlalchemy import String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship

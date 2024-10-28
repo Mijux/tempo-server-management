@@ -15,11 +15,9 @@ class Day(Base):
 
     date: Mapped[str] = mapped_column(String, primary_key=True)
     id_pricing: Mapped[UUID] = mapped_column(ForeignKey("pricing.id"), nullable=False)
-    consumption_offpeak: Mapped[float] = mapped_column(
-        Float, nullable=True, default=None
-    )
+    consumption_offpeak: Mapped[float] = mapped_column(Float, nullable=False, default=0)
     consumption_fullpeak: Mapped[float] = mapped_column(
-        Float, nullable=True, default=None
+        Float, nullable=False, default=0
     )
 
     derogations: Mapped[List["Derogation"]] = relationship()

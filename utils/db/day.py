@@ -70,7 +70,7 @@ def init_fill_power_consumption():
         days_to_fill: list[Day] = (
             db_session.query(Day)
             .filter(
-                or_(Day.consumption_offpeak == None, Day.consumption_fullpeak == None),
+                or_(Day.consumption_offpeak == 0, Day.consumption_fullpeak == 0),
                 Day.date < date.today().strftime("%Y-%m-%d"),
             )
             .all()
@@ -101,7 +101,49 @@ def init_fill_power_consumption():
 
 # This function is ised to fill day where tasmota data are missing. The power calculated is the average of all other days
 def fill_missing_consumption():
-    pass
+    with get_session() as db_session:
+        days: list[Day] = (
+            db_session.query(Day)
+            .filter(Day.date < date.today().strftime("%Y-%m-%d"))
+            .all()
+        )
+        db_total_power = 0
+        for day in days:
+            if day.consumption_fullpeak:
+                db_total_power += day.consumption_fullpeak
+            if day.consumption_offpeak:
+                db_total_power += day.consumption_offpeak
+
+        irl_total_power = None
+        if getenv("ENVIRONMENT", None).upper() == "PROD":
+            irl_total_power = TastomaAPI().get_power_total()
+        else:
+            irl_total_power = TastomaStubAPI().get_power_total()
+
+        if round(db_total_power, 2) < round(irl_total_power):
+            days_to_fill: list[Day] = db_session.query(Day).filter(
+                or_(Day.consumption_offpeak == 0, Day.consumption_fullpeak == 0),
+                Day.date < date.today().strftime("%Y-%m-%d"),
+            )
+
+            power_to_dispatch = irl_total_power - db_total_power
+
+            if len(days_to_fill) == 0:
+                last_day: Day = db_session.query(Day).filter(
+                    Day.date == date.today() + timedelta(days=-1)
+                )
+                last_day.consumption_fullpeak += power_to_dispatch * 2 / 3
+                last_day.consumption_offpeak += power_to_dispatch * 1 / 3
+            else:
+                power_per_day = power_to_dispatch / len(days_to_fill)
+                for day in days_to_fill:
+                    day.consumption_fullpeak += power_per_day * 2 / 3
+                    day.consumption_offpeak += power_per_day * 1 / 3
+
+        try:
+            db_session.commit()
+        except:
+            db_session.rollback()
 
 
 def add_day(day: dict):

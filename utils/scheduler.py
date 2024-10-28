@@ -3,6 +3,8 @@
 import schedule
 
 from datetime import date, timedelta
+from time import sleep
+from threading import Thread, Event as TEvent
 
 from api.proxmox import ProxmoxAPI, ProxmoxStubAPI
 from api.tempo_day import TempoAPI
@@ -10,6 +12,35 @@ from models.day import Day
 from utils.db.day import add_day
 from utils.dbconn import get_session
 from utils.logger import get_logger
+
+
+def get_schedule_jobs() -> list[schedule.jobs] | None:
+    return schedule.get_jobs()
+
+
+def run_continuously(interval=1):
+    """Continuously run, while executing pending jobs at each
+    elapsed time interval.
+    @return cease_continuous_run: threading. Event which can
+    be set to cease continuous run. Please note that it is
+    *intended behavior that run_continuously() does not run
+    missed jobs*. For example, if you've registered a job that
+    should run every minute and you set a continuous run
+    interval of one hour then your job won't be run 60 times
+    at each interval but only once.
+    """
+    cease_continuous_run = TEvent()
+
+    class ScheduleThread(Thread):
+        @classmethod
+        def run(cls):
+            while not cease_continuous_run.is_set():
+                schedule.run_pending()
+                sleep(interval)
+
+    continuous_thread = ScheduleThread()
+    continuous_thread.start()
+    return cease_continuous_run
 
 
 def register_schedules():
@@ -69,7 +100,7 @@ def retrieve_next_day_color(exec_hour):
             )
 
             if not has_day():
-                add_day(db_session, day_data)
+                add_day(day_data)
             db_session.commit()
 
 
