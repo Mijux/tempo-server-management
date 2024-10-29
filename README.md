@@ -18,44 +18,43 @@
     - every day at 6h00 to retrieve consumption of last offpeak
     - every day at 22h00 to retreive consumption of last fullpeak
     - 1st January of each year to compute power debt of each user
+    - server life cycle
 
 ## DISCORD
 
 1. start bot system and works with several server grouped
     => ask @Mijux for information
 2. listen for next commands:
-    - `/hello_you`
-    - `/hello_you <user_id> <arrival_date>`
+    - `/hello <user_id> <arrival_date>`
+        - `desc`: Add a user to the server project
+        - `admin-only`
+        - `user_id` **REQUIRED**: discord id user **present** on the server
+        - `arrival_date` **OPTIONAL**: must be before or equal the current day and in **YYYY-MM-DD** format
+    - `/bye yes`
+        - `desc`: User that use this command leave the server
+        - `yes` **REQUIRED**: force user to confirm to avoid error when using the command
+    - `/bye <user_id>`
+        - `desc`: Kick the user specified from the server project
         - `admin-only`
         - `user_id` **REQUIRED** discord id user **present** on the server
-        - `arrival_date` **OPTIONAL** must be before or equal the current day and in **YYYY-MM-DD** format
-    - `/bye_bye`
-    - `/bye_bye <user_id>`
-        - `admin-only`
-        - `user_id` **REQUIRED** discord id user **present** on the server
-    - `/change_date [arrival|leave] <date>`
-        - `admin-only`
-        - `date` **REQUIRED** must be before or equal the current day and in **YYYY-MM-DD** format
     - `/set_derogation`
-    - `/remove_derogation`
-        - can't be executed after 21h45
-    - `/get_total_state`
-        - return global consumption since server start
-        - return consumption from one week
-        - return consumption from yesterday
-        - return current consumption of the day
-        - return global power price 
-    - `/get_my_state`
-        - return my power price
-        - return derogation and date of them and the price of each of them
+        - `desc`: set a derogation for the current user for next day. Can't be executed after 6h00
+    - `/unset_derogation`
+        - `desc`: unset a derogation for the current user for next day.
+    - `/power_on`
+        - `desc`: on the red day, power on the server and automatically add derogation for the user
+    - `/get_state [all|global|year|month|week|yesterday|today]+`
+        - `desc`: Return consumption and power price for temporalities chosen
+    - `/get_my_state <user_id> [all|global|year|month|week|yesterday|today]+`
+        - `desc`: Return consumption and power price for temporalities chosen for the user specified
 
 ## LIFE CYCLE
 
 - If next day is red
     - If has derogation
-        - At 22h00 => poweroff server
+        - At 6h00 => poweroff server
 - else
-    - At 6h => poweron the server
+    - At 22h => poweron the server
 
 
 # PROBLEM CASE 1
@@ -74,7 +73,7 @@ This case appear when internet is down.
 ## LIFE CYCLE
 
 -   if next day is unknow (because of internet)
-    -   *at 22h00 => poweroff server ?*
+    -   *at 6h00 => poweroff server ?*
         > What must be the default behavior ? 
 
 # PROBLEM CASE 2
