@@ -58,11 +58,11 @@
     - At 6h => poweron the server
 
 
-# PROBLEM CASE
+# PROBLEM CASE 1
 
-This case appear when the server that run the TSM code is down or internet was down too.
+This case appear when internet is down.
 
-## STARTUP
+## WHEN INTERNET IS UP
 
 1. create day that are missing
 2. fill these days except the current day with the result of
@@ -73,6 +73,33 @@ This case appear when the server that run the TSM code is down or internet was d
 
 ## LIFE CYCLE
 
--   if next day is unknow (because of internet of all other day)
+-   if next day is unknow (because of internet)
     -   *at 22h00 => poweroff server ?*
         > What must be the default behavior ? 
+
+# PROBLEM CASE 2
+
+This case appear when the tasmota plug is broken.
+
+## STARTUP TSM WHEN A NEW PLUG IS PLUGGED
+
+1. create days that are missing
+2. register schedulers
+    - if **db LAST_STATE** > **tasmota TOTAL_POWER**
+        - then dont fill missing days (put them at -1 to say down)
+
+## LIFE CYCLE
+
+-   Nothing, the server is down because out of power
+    - Just we need to ensure that the server can powerdown safely thanks to inverter
+
+# PROBLEM CASE 3
+
+The TSM code is down
+
+## STARTUP TSM
+
+1. create days that are missing
+2. register schedulers
+    - if **db LAST_STATE** < **tasmota TOTAL_POWER**
+        - then fill missing days with the average power day
