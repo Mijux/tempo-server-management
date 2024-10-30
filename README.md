@@ -24,6 +24,7 @@
 1. start bot system and works with several server grouped
     => ask @Mijux for information
 2. listen for next commands:
+    - `/hello_you`
     - `/hello_you <user_id> <arrival_date>`
         - `admin-only`
         - `user_id` **REQUIRED** discord id user **present** on the server
@@ -32,34 +33,21 @@
     - `/bye_bye <user_id>`
         - `admin-only`
         - `user_id` **REQUIRED** discord id user **present** on the server
-    - `/change_date [arrival|leave] <date> <user_id>`
+    - `/change_date [arrival|leave] <date>`
         - `admin-only`
-        - `date` **REQUIRED** must be before or equal the current day and in **YYYY-MM-DD** 
-        - `user_id` **REQUIRED** discord id user **present** on the server
-format
-    - `/set_derogation [today/tomorrow] <hour_start> <hour_end>`
-        - `hour_start` not mandatory. By default if "today" is select, the derogation will be avalaible as soon as possible. If tomorrow is choosen by the user, the hour start is 6am.
-        - `hour_end` not mandatory. By default the derogation last 12 hours.
-        - return a **derogation id**
-    - `/remove_derogation` <derogation_id>
+        - `date` **REQUIRED** must be before or equal the current day and in **YYYY-MM-DD** format
+    - `/set_derogation`
+    - `/remove_derogation`
         - can't be executed after 21h45
-        - `derogation_id` **required**
-    - `/get_my_current_derogations`
-        - return derogation_id and description derogation ( start hour and end hour )        
-    - `/get_total_state` [all/global/year/week/yesterday/day]
-        - return global consumption since server start and price (for all and global)
-        - return consumption from last year and price (for all and year)
-        - return consumption from one week and price (for all and week)
-        - return consumption from yesterday and price (for all and yesterday)
-        - return current consumption of the day and price (for all and day)
-    - `/get_my_state` [all/global/year/week/yesterday/day/derogations_year/derogations_total]
-        - return global consumption since server start and price (for all and global)
-        - return consumption from last year and price (for all and year)
-        - return consumption from one week and price (for all and week)
-        - return consumption from yesterday and price (for all and yesterday)
-        - return current consumption of the day and price (for all and day)
-        - return current consumption of the derogation of the current and price (for all and derogations_year)
-        - return current consumption of the derogation since arrival date and price (for all and derogations_total)
+    - `/get_total_state`
+        - return global consumption since server start
+        - return consumption from one week
+        - return consumption from yesterday
+        - return current consumption of the day
+        - return global power price 
+    - `/get_my_state`
+        - return my power price
+        - return derogation and date of them and the price of each of them
 
 ## LIFE CYCLE
 
