@@ -1,6 +1,7 @@
 .vscode
 .idea
-database.db
+*.db
+*.drawio.bkp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
