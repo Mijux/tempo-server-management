@@ -15,7 +15,7 @@ def init_pricing_table():
     POWER_PRICE_PATH = getenv("POWER_PRICE", "ressources/power_price.json")
 
     with get_session() as db_session:
-        pricings: List = db_session.query(Pricing).all()
+        pricings: list = db_session.query(Pricing).all()
 
         if len(pricings) == 0:
             get_logger().warning("Pricing table has not been initialized")

@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
-from typing import List
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import UUID
-from uuid import uuid4
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 
 from models.base import Base
 

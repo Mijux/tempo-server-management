@@ -4,7 +4,6 @@ from datetime import datetime, date, timedelta
 from os import getenv
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
 
 from api.tempo_day import TempoAPI
 from api.tasmota import TastomaAPI, TastomaStubAPI
@@ -21,7 +20,7 @@ def init_day_table():
     today_date = date.today()
 
     with get_session() as db_session:
-        days: List = db_session.query(Day).all()
+        days: list = db_session.query(Day).all()
         if len(days) == 0:
             get_logger().warning("Day table has not been initialized")
 
@@ -42,6 +41,8 @@ def init_day_table():
 
 # This function is used to fill days where we dont retrieve tasmota data
 def init_fill_power_consumption():
+    get_logger().critical("This function must be reimplemented !! Exiting")
+    exit(1)
     with get_session() as db_session:
 
         power_total = None
@@ -52,9 +53,7 @@ def init_fill_power_consumption():
 
         days_filled: list[Day] = (
             db_session.query(Day)
-            .filter(
-                or_(Day.consumption_offpeak != None, Day.consumption_fullpeak != None)
-            )
+            .filter(or_(Day.consumption != None, Day.consumption_fullpeak != None))
             .all()
         )
 
@@ -101,6 +100,8 @@ def init_fill_power_consumption():
 
 # This function is ised to fill day where tasmota data are missing. The power calculated is the average of all other days
 def fill_missing_consumption():
+    get_logger().critical("This function must be reimplemented !! Exiting")
+    exit(1)
     with get_session() as db_session:
         days: list[Day] = (
             db_session.query(Day)
