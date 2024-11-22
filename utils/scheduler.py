@@ -3,13 +3,44 @@
 import schedule
 
 from datetime import date, timedelta
+from time import sleep
+from threading import Thread, Event as TEvent
 
-from api.proxmox import ProxmoxAPI
+from api.proxmox import ProxmoxAPI, ProxmoxStubAPI
 from api.tempo_day import TempoAPI
 from models.day import Day
 from utils.db.day import add_day
 from utils.dbconn import get_session
 from utils.logger import get_logger
+
+
+def get_schedule_jobs() -> list[schedule.jobs] | None:
+    return schedule.get_jobs()
+
+
+def run_continuously(interval=1):
+    """Continuously run, while executing pending jobs at each
+    elapsed time interval.
+    @return cease_continuous_run: threading. Event which can
+    be set to cease continuous run. Please note that it is
+    *intended behavior that run_continuously() does not run
+    missed jobs*. For example, if you've registered a job that
+    should run every minute and you set a continuous run
+    interval of one hour then your job won't be run 60 times
+    at each interval but only once.
+    """
+    cease_continuous_run = TEvent()
+
+    class ScheduleThread(Thread):
+        @classmethod
+        def run(cls):
+            while not cease_continuous_run.is_set():
+                schedule.run_pending()
+                sleep(interval)
+
+    continuous_thread = ScheduleThread()
+    continuous_thread.start()
+    return cease_continuous_run
 
 
 def register_schedules():
@@ -20,23 +51,35 @@ def register_schedules():
     )
     schedule.every().day.at("11:05").do(retrieve_next_day_color, "11:05")
 
-    # Retrieve day color at 12:05 am
+    # Retrieve day color at 12:05 pm
     get_logger().debug(
-        "Registering scheduler\n\tfunc: retrieve_next_day_color\n\ttime: every day at 12:05 am"
+        "Registering scheduler\n\tfunc: retrieve_next_day_color\n\ttime: every day at 12:05 pm"
     )
     schedule.every().day.at("12:05").do(retrieve_next_day_color, "12:05")
 
-    # Retrieve day color at 20:05 am -> this one is used only if both precedent execution didn't work
+    # Retrieve day color at 8:05 am -> this one is used only if both precedent execution didn't work
     get_logger().debug(
-        "Registering scheduler\n\tfunc: retrieve_next_day_color\n\ttime: every day at 20:05 am"
+        "Registering scheduler\n\tfunc: retrieve_next_day_color\n\ttime: every day at 8:05 am"
     )
     schedule.every().day.at("20:05").do(retrieve_next_day_color, "20:05")
 
     # Manage server or server (start or stop)
     get_logger().debug(
-        "Registering scheduler\n\tfunc: server_life_cycle_management\n\ttime: every day at 21:55 am"
+        "Registering scheduler\n\tfunc: server_life_cycle_management\n\ttime: every day at 9:55 am"
     )
     schedule.every().day.at("21:55").do(server_life_cycle_management)
+
+    # Retrieve fullpeak consumption
+    get_logger().debug(
+        "Registering scheduler\n\tfunc: retrieve_power_consumption_fullpeak: every day at 10:00 pm"
+    )
+    schedule.every().day.at("22:00").do(retrieve_power_consumption_fullpeak)
+
+    # Retrieve offpeak consumption
+    get_logger().debug(
+        "Registering scheduler\n\tfunc: retrieve_power_consumption_offpeak: every day at 6:00 am"
+    )
+    schedule.every().day.at("06:00").do(retrieve_power_consumption_offpeak)
 
 
 def retrieve_next_day_color(exec_hour):
@@ -57,8 +100,16 @@ def retrieve_next_day_color(exec_hour):
             )
 
             if not has_day():
-                add_day(db_session, day_data)
+                add_day(day_data)
             db_session.commit()
+
+
+def retrieve_power_consumption_fullpeak():
+    pass
+
+
+def retrieve_power_consumption_offpeak():
+    pass
 
 
 def server_life_cycle_management():
@@ -69,7 +120,11 @@ def server_life_cycle_management():
             get_logger().info(
                 "Next day is red and no derogation has been emitted : shutdown server"
             )
-            ProxmoxAPI().power_off()
+
+            if getenv("ENVIRONMENT", None).upper() == "PROD":
+                ProxmoxAPI().power_off()
+            else:
+                ProxmoxStubAPI().power_off()
         else:
             get_logger().info(
                 f"Next day is red but has derogation emitted from {get_derogation_user()} : power on server"
@@ -77,4 +132,7 @@ def server_life_cycle_management():
     else:
         get_logger().info("Next day is not red: power on server")
 
-    ProxmoxAPI().power_on()
+    if getenv("ENVIRONMENT", None).upper() == "PROD":
+        ProxmoxAPI().power_on()
+    else:
+        ProxmoxStubAPI().power_on()

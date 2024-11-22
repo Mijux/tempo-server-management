@@ -7,6 +7,23 @@ from requests import get as rget
 from utils.logger import get_logger
 
 
+class TastomaStubAPI:
+
+    def __init__(self, total=200, today=1, yesterday=1.3):
+        self.total = total
+        self.today = today
+        self.yesterday = yesterday
+
+    def get_power_total(self) -> float:
+        return float(self.total)
+
+    def get_power_today(self) -> float:
+        return float(self.today)
+
+    def get_power_yesterday(self) -> float:
+        return float(self.yesterday)
+
+
 class TastomaAPI:
 
     HOST = None
@@ -64,28 +81,3 @@ class TastomaAPI:
         else:
             get_logger().error(f"Cannot retrieve {url}")
             get_logger().debug(req.reason)
-
-
-"""     def power_on() -> bool:
-        command = "Power%20on"
-        url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
-        req = rget(url)
-
-        if req.status_code == 200:
-            return True
-        else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
-            return False
-
-    def power_off() -> bool:
-        command = "Power%20off"
-        url = join(TastomaAPI.HOST, f"cm?cmnd={command}")
-        req = rget(url)
-
-        if req.status_code == 200:
-            return True
-        else:
-            print(f"Error when retrieve {url}")
-            print(req.reason)
-            return False """

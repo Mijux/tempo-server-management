@@ -22,4 +22,4 @@ class Pricing(Base):
     days: Mapped[List["Day"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"Pricing(id={self.id},color={self.color},hc={self.hc},hp={self.hp})"
+        return f"Pricing(period={self.period},color={self.color},id={self.id},hc={self.hc},hp={self.hp})"

@@ -15,10 +15,12 @@ class Day(Base):
 
     date: Mapped[str] = mapped_column(String, primary_key=True)
     id_pricing: Mapped[UUID] = mapped_column(ForeignKey("pricing.id"), nullable=False)
-    conso_hc: Mapped[float] = mapped_column(Float, nullable=True)
-    conso_hp: Mapped[float] = mapped_column(Float, nullable=True)
+    consumption_offpeak: Mapped[float] = mapped_column(Float, nullable=False, default=0)
+    consumption_fullpeak: Mapped[float] = mapped_column(
+        Float, nullable=False, default=0
+    )
 
     derogations: Mapped[List["Derogation"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"Day(date={self.date},id_pricing={self.id_pricing},conso_hc={self.conso_hc},conso_hp={self.conso_hp})"
+        return f"Day(date={self.date},id_pricing={self.id_pricing},consumption_offpeak={self.consumption_offpeak},consumption_fullpeak={self.consumption_fullpeak})"
