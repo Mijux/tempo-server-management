@@ -13,7 +13,7 @@ class Consumption(Base):
     begin_hour: Mapped[int] = mapped_column(Integer, primary_key=True)
     end_hour: Mapped[int] = mapped_column(Integer, primary_key=True)
     begin_consumption_power: Mapped[float] = mapped_column(Float)
-    begin_consumption_power: Mapped[float] = mapped_column(Float)
+    end_consumption_power: Mapped[float] = mapped_column(Float)
 
     def __repr__(self) -> str:
         return f"Derogation(id_user={self.id_user},date={self.date})"

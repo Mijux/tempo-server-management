@@ -3,7 +3,6 @@
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
-from models.base import Base
 from utils.singleton import SingletonMeta
 
 
@@ -21,10 +20,6 @@ class EngineSingleton(metaclass=SingletonMeta):
 
     def get_engine(self) -> Engine:
         return self.engine
-
-
-def init_db():
-    Base.metadata.create_all(EngineSingleton().get_engine())
 
 
 def get_session():
