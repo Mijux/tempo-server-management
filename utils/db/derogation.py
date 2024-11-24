@@ -96,3 +96,16 @@ def get_derogation_per_user(user_id: str) -> list[Derogation] | None:
             raise DBDerogationDoesNotExistError(user_id=user_id)
 
         return derogations
+
+
+def get_derogation_users(date: str) -> list[str] | None:
+    with get_session() as db_session:
+        derogations: list[Derogation] = (
+            db_session.query(Derogation).filter(Derogation.date == date).all()
+        )
+
+        users = []
+        for derogation in derogations:
+            users.append(derogation.id_user)
+
+        return users

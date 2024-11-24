@@ -8,7 +8,12 @@ from api.tempo_day import TempoAPI
 from models.day import Day
 from models.pricing import Pricing
 from utils.dbconn import get_session
-from utils.exceptions import DBPricingDoesNotExistError, DBDayAlreadyExistsError
+from utils.enums.day import DayE
+from utils.exceptions import (
+    DBPricingDoesNotExistError,
+    DBDayAlreadyExistsError,
+    DBDayDoesNotExistError,
+)
 from utils.logger import get_logger
 
 
@@ -63,3 +68,39 @@ def add_day(day: dict):
 
         else:
             raise DBPricingDoesNotExistError(day.get("codeJour"), day.get("periode"))
+
+
+def is_red_day(date: str) -> bool:
+    with get_session() as db_session:
+        day = db_session.query(Day).filter(Day.date == date).first()
+
+        if day:
+            pricing = (
+                db_session.query(Pricing).filter(Pricing.id == day.id_pricing).first()
+            )
+
+            if pricing:
+                if DayE.from_number(pricing.color) is DayE.BLUE:
+                    return False
+                elif DayE.from_number(pricing.color) is DayE.WHITE:
+                    return False
+                elif DayE.from_number(pricing.color) is DayE.RED:
+                    return True
+            else:
+                raise DBPricingDoesNotExistError("unknown", "unknown")
+
+        else:
+            raise DBDayDoesNotExistError(date)
+
+
+def has_derogation(date: str) -> bool:
+    with get_session() as db_session:
+        day = db_session.query(Day).filter(Day.date == date).first()
+
+        if day:
+            if len(day.derogations) == 0:
+                return False
+            else:
+                return True
+        else:
+            raise DBDayDoesNotExistError(date)
