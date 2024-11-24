@@ -15,6 +15,11 @@ class TempoAPI:
 
     DAY = "jourTempo"
     DAYS = "joursTempo"
+
+    API_DAY_DATE = "dateJour"
+    API_DAY_COLOR_CODE = "codeJour"
+    API_DAY_PERIOD = "periode"
+
     DATE_REGEX = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 
     def __init__(self):
@@ -37,7 +42,7 @@ class TempoAPI:
             req = rget(url)
 
             if req.status_code == 200:
-                return req.json()
+                return self.translate(req.json())
 
             else:
                 get_logger().error(f"Can't retrieve {url}")
@@ -52,7 +57,7 @@ class TempoAPI:
         url = join(self.HOST_BASE_URL, TempoAPI.DAYS) + "?"
         for date in dates:
             if match(TempoAPI.DATE_REGEX, date):
-                url += f"dateJour[]={date}&"
+                url += f"{self.API_DAY_DATE}[]={date}&"
             else:
                 get_logger().error(
                     f"date must be in YYYY-MM-DD format, currently date was : {date}"
@@ -63,6 +68,26 @@ class TempoAPI:
         req = rget(url)
 
         if req.status_code == 200:
-            return req.json()
+            return self.translate(req.json())
+
+        get_logger().error(f"Can't retrieve {url}")
+        return None
+
+    def translate(self, data: any):
+        if isinstance(data, list):
+            list_translated = []
+            for day in data:
+                list_translated.append(
+                    {
+                        "date": day.get(self.API_DAY_DATE),
+                        "color_code": day.get(self.API_DAY_COLOR_CODE),
+                        "period": day.get(self.API_DAY_PERIOD),
+                    }
+                )
+            return list_translated
         else:
-            get_logger().error(f"Can't retrieve {url}")
+            return {
+                "date": data.get(self.API_DAY_DATE),
+                "color_code": data.get(self.API_DAY_COLOR_CODE),
+                "period": data.get(self.API_DAY_PERIOD),
+            }
