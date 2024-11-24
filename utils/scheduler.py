@@ -78,7 +78,7 @@ def register_schedules():
     get_logger().debug(
         "Registering scheduler\n\tfunc: server_life_cycle_management\n\ttime: every day at 5:55 am"
     )
-    schedule.every().day.at("5:55").do(server_life_cycle_management)
+    schedule.every().day.at("05:55").do(server_life_cycle_management)
 
 
 def retrieve_hourly_consumption():
@@ -108,17 +108,13 @@ def retrieve_next_day_color():
     next_day: date = date.today() + timedelta(days=1)
     day_data = TempoAPI().get_day(next_day.strftime("%Y-%m-%d"))
 
-    if day_data.get("codeJour") == 0:
-        get_logger().warning(
-            f"The next day ({day_data.get('dateJour')}) color is unknown"
-        )
+    if day_data.get("color_code") == 0:
+        get_logger().warning(f"The next day ({day_data.get('date')}) color is unknown")
     else:
         with get_session() as db_session:
 
             has_day = (
-                db_session.query(Day)
-                .filter(Day.date == day_data.get("dateJour"))
-                .first()
+                db_session.query(Day).filter(Day.date == day_data.get("date")).first()
             )
 
             if not has_day():

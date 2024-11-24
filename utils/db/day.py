@@ -47,15 +47,15 @@ def add_day(day: dict):
         pricing: Pricing | None = (
             db_session.query(Pricing)
             .filter(
-                Pricing.color == day.get("codeJour"),
-                Pricing.period == day.get("periode"),
+                Pricing.color == day.get("color_code"),
+                Pricing.period == day.get("period"),
             )
             .first()
         )
 
         if pricing:
             new_day = Day(
-                date=day.get("dateJour"),
+                date=day.get("date"),
                 id_pricing=pricing.id,
             )
             db_session.add(new_day)
@@ -64,10 +64,10 @@ def add_day(day: dict):
                 db_session.commit()
             except IntegrityError:
                 db_session.rollback()
-                raise DBDayAlreadyExistsError(day.get("dateJour"))
+                raise DBDayAlreadyExistsError(day.get("date"))
 
         else:
-            raise DBPricingDoesNotExistError(day.get("codeJour"), day.get("periode"))
+            raise DBPricingDoesNotExistError(day.get("color_code"), day.get("period"))
 
 
 def is_red_day(date: str) -> bool:
