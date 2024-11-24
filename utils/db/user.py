@@ -17,7 +17,6 @@ def add_user(user: dict) -> bool:
             username=user.get("username"),
             avatar=user.get("avatar"),
             permission_level=0,
-            arrival_date=user.get("arrival_date"),
         )
 
         db_session.add(new_user)

@@ -33,7 +33,7 @@ def add_derogation(user_id: str, date: str) -> bool:
         try:
             db_session.commit()
         except IntegrityError:
-            db.rollback()
+            db_session.rollback()
             raise DBDerogationAlreadyExistsError(user_id, date)
 
     return True
@@ -72,7 +72,7 @@ def get_derogation(user_id: str, date: str) -> Derogation:
         return Derogation
 
 
-def get_derogation_per_date(date: str) -> List[Derogation] | None:
+def get_derogation_per_date(date: str) -> list[Derogation] | None:
     with get_session() as db_session:
 
         derogations: Derogation | None = (
@@ -85,7 +85,7 @@ def get_derogation_per_date(date: str) -> List[Derogation] | None:
         return derogations
 
 
-def get_derogation_per_user(user_id: str) -> List[Derogation] | None:
+def get_derogation_per_user(user_id: str) -> list[Derogation] | None:
     with get_session() as db_session:
 
         derogations: Derogation | None = (
@@ -96,3 +96,16 @@ def get_derogation_per_user(user_id: str) -> List[Derogation] | None:
             raise DBDerogationDoesNotExistError(user_id=user_id)
 
         return derogations
+
+
+def get_derogation_users(date: str) -> list[str] | None:
+    with get_session() as db_session:
+        derogations: list[Derogation] = (
+            db_session.query(Derogation).filter(Derogation.date == date).all()
+        )
+
+        users = []
+        for derogation in derogations:
+            users.append(derogation.id_user)
+
+        return users

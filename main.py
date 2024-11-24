@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 
 from dotenv import load_dotenv
-from os import getenv, environ
+from os import getenv
 
 from api.tempo_day import TempoAPI
 from api.proxmox import ProxmoxAPI, ProxmoxStubAPI
-from utils.dbconn import init_db
-from utils.db.pricing import init_pricing_table
-from utils.db.day import (
-    init_day_table,
-    init_fill_power_consumption,
-    fill_missing_consumption,
-)
+
+from utils.db.init import init as db_init
 from utils.scheduler import register_schedules, run_continuously, get_schedule_jobs
 from utils.logger import setup_logger, get_logger
 
@@ -31,17 +26,13 @@ if not getenv("TIMEZONE", None):
     exit(1)
 
 
-is_test = True
+is_test = False
 
-if is_test:
-    fill_missing_consumption()
-else:
-    init_db()
-    init_pricing_table()
-    init_day_table()
-    init_fill_power_consumption()
+if not is_test:
+    db_init()
     register_schedules()
-
+else:
+    pass
 
 get_logger().info("Start Background Scheduler")
 stop_run_continuously = run_continuously()

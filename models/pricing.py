@@ -13,11 +13,11 @@ from models.day import Day
 class Pricing(Base):
     __tablename__ = "pricing"
 
-    period: Mapped[str] = mapped_column(String, nullable=True, primary_key=True)
-    color: Mapped[int] = mapped_column(Integer, nullable=False, primary_key=True)
-    id: Mapped[UUID] = mapped_column(UUID, default=uuid4, unique=True)
-    hc: Mapped[float] = mapped_column(Float, nullable=False)
-    hp: Mapped[float] = mapped_column(Float, nullable=False)
+    period: Mapped[str] = mapped_column(String, primary_key=True)
+    color: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[UUID] = mapped_column(UUID, default=uuid4, nullable=False, unique=True)
+    price_fullpeak: Mapped[float] = mapped_column(Float, nullable=False)
+    price_offpeak: Mapped[float] = mapped_column(Float, nullable=False)
 
     days: Mapped[List["Day"]] = relationship()
 
