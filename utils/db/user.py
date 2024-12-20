@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from models.user import User
@@ -10,7 +11,17 @@ from utils.dbconn import get_session
 from utils.exceptions import DBUserAlreadyExistsError, DBUserDoesNotExistError
 
 
+def get_user(id: str) -> dict:
+    with get_session() as db_session:
+        try:
+            return db_session.get_one(User, id)
+        except NoResultFound:
+            return None
+
+    return True
+
 def add_user(user: dict) -> bool:
+    print("ici", user)
     with get_session() as db_session:
         new_user: User = User(
             id=user.get("id"),

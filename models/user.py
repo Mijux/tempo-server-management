@@ -24,4 +24,4 @@ class User(Base):
     user_presence_status: Mapped[List["UserPresenceStatus"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"User(id={self.id},username={self.username},avatar={self.avatar},permission_level={self.permission_level},arrival_date={self.arrival_date},leave_date={self.leave_date})"
+        return f"User(id={self.id},username={self.username},avatar={self.avatar},permission_level={self.permission_level}"
