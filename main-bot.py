@@ -5,8 +5,8 @@ from bot.discord_bot import DiscordBot
 
 load_dotenv()
 TOKEN_BOT = os.getenv("TOKEN_BOT")
-print(TOKEN_BOT)
-bot = DiscordBot(TOKEN_BOT)
+GUILD_ID = os.getenv("GUILD_ID")
+bot = DiscordBot(TOKEN_BOT, GUILD_ID)
 bot.run()
 
 

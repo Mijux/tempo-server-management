@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
 import discord
-
+from discord.ext import commands
+from discord import app_commands
 from bot.discord_job import DiscordJob
 
 class DiscordBot:
-    def __init__(self, TOKEN_BOT):
+    def __init__(self, TOKEN_BOT, GUILD_ID):
         self.TOKEN_BOT = TOKEN_BOT
-        self.client = discord.Client(intents=self.configure_bot()) 
-        self.setup_events()
-        self.worker = DiscordJob()
-
+        self.GUILD_ID = discord.Object(id=GUILD_ID)       
+        self.client = commands.Bot(command_prefix="!", intents=self.configure_bot()) 
+        self.setup_events()  
+        self.setup_cmds()   
+        self.worker = DiscordJob()  
+    
     def configure_bot(self):
+        """
+        Configure les intents pour permettre au bot de lire les messages.
+        """
         intents = discord.Intents.default()
-        intents.message_content = True 
-        return intents 
+        intents.message_content = True  # Nécessaire pour pouvoir lire le contenu des messages
+        return intents
 
     def setup_events(self):
         """
@@ -25,14 +31,24 @@ class DiscordBot:
 
         @self.client.event
         async def on_message(message):
+            # Ignore les messages envoyés par le bot lui-même
             if message.author == self.client.user:
                 return
+            
+            # Gère les messages Ping
             if message.content == "Ping":
                 await message.channel.send("Pong")
                 self.worker.add_user(message.author.id, message.author.name, message.author.avatar)
 
+            # Traite aussi les commandes
+            await self.client.process_commands(message)
+
+    def setup_cmds(self):
+        print("ici")
+        print(self.GUILD_ID.id)
+        @self.client.command(name="hello", description="Hello me", guild=self.GUILD_ID)
+        async def hello(interaction: discord.Interaction):
+            await interaction.channel.send("coucou")
+        
     def run(self):
-        """
-        Lance le bot avec le token.
-        """
         self.client.run(self.TOKEN_BOT)
