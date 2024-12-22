@@ -3,7 +3,7 @@
 from sqlalchemy import String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from models.base import Base
+from db.models.base import Base
 
 
 class PaymentSchedule(Base):

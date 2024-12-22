@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from models.base import Base
+from db.models.base import Base
 from utils.dbconn import EngineSingleton
-from utils.db.pricing import init_pricing_table
-from utils.db.day import init_day_table
-from utils.db.consumption import init_consumption_table
+from db.dao.pricing import init_pricing_table
+from db.dao.day import init_day_table
+from db.dao.consumption import init_consumption_table
 
 
 def init_db():

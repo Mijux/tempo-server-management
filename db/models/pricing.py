@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import UUID
 from uuid import uuid4
 
-from models.base import Base
-from models.day import Day
+from db.models.base import Base
+from db.models.day import Day
 
 
 class Pricing(Base):

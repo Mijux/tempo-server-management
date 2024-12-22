@@ -5,8 +5,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from models.user import User
-from utils.dbconn import get_session
+from db.models.user import User
+from db.daoconn import get_session
 
 from utils.exceptions import DBUserAlreadyExistsError, DBUserDoesNotExistError
 

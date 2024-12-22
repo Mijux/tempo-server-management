@@ -3,7 +3,7 @@
 from sqlalchemy import ForeignKey, Integer, Float
 from sqlalchemy.orm import Mapped, mapped_column
 
-from models.base import Base
+from db.models.base import Base
 
 
 class Consumption(Base):

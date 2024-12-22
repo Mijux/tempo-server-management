@@ -3,9 +3,9 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from models.user import User
-from models.day import Day
-from models.derogation import Derogation
+from db.models.user import User
+from db.models.day import Day
+from db.models.derogation import Derogation
 from utils.dbconn import get_session
 
 from utils.exceptions import (

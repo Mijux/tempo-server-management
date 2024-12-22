@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from json import load
-from models.pricing import Pricing
+from db.models.pricing import Pricing
 from os import getenv
 from sqlalchemy.exc import IntegrityError
 

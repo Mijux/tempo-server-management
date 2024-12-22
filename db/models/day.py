@@ -5,9 +5,9 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import UUID
 
-from models.base import Base
-from models.derogation import Derogation
-from models.consumption import Consumption
+from db.models.base import Base
+from db.models.derogation import Derogation
+from db.models.consumption import Consumption
 
 
 class Day(Base):

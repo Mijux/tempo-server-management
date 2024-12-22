@@ -10,12 +10,12 @@ from threading import Thread, Event as TEvent
 
 from api.proxmox import ProxmoxAPI, ProxmoxStubAPI
 from api.tasmota import TastomaAPI
-from api.tempo_day import TempoAPI
-from models.consumption import Consumption
-from models.day import Day
-from utils.db.day import add_day, has_derogation, is_red_day
-from utils.db.consumption import add_consumption
-from utils.db.derogation import get_derogation_users
+from api.tempo import TempoAPI
+from db.models.consumption import Consumption
+from db.models.day import Day
+from db.dao.day import add_day, has_derogation, is_red_day
+from db.dao.consumption import add_consumption
+from db.dao.derogation import get_derogation_users
 from utils.dbconn import get_session
 from utils.logger import get_logger
 
