@@ -40,10 +40,10 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
 1. start bot system and works with several server grouped
     => ask @Mijux for information
 2. listen for next commands:
-    - `/hello <user_id> <arrival_date>`
+    - `/hello @mention <arrival_date>`
         - `desc`: Add a user to the server project
         - `admin-only`
-        - `user_id` **REQUIRED**: discord user name **present** on the server
+        - `@mention` **REQUIRED**: discord user name **present** on the server
         - `arrival_date` **OPTIONAL**: must be before or equal the current day and in **YYYY-MM-DD** format
     - `/bye yes`
         - `desc`: User that use this command leave the server

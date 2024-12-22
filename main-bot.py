@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os;
 from dotenv import load_dotenv
-from bot.discord_bot import DiscordBot
+from bot.discord import DiscordBot
 
 load_dotenv()
 TOKEN_BOT = os.getenv("TOKEN_BOT")

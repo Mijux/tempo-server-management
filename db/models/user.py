@@ -16,7 +16,7 @@ class User(Base):
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
     username: Mapped[str] = mapped_column(String, nullable=False)
-    avatar: Mapped[str] = mapped_column(String, nullable=False)
+    avatar: Mapped[str] = mapped_column(String, nullable=True)
     permission_level: Mapped[int] = mapped_column(Integer, nullable=False)
 
     derogations: Mapped[List["Derogation"]] = relationship()
