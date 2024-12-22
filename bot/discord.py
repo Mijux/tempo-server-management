@@ -5,7 +5,7 @@ from discord import app_commands
 from bot.command import CommandHandler
 
 from datetime import datetime
-from utils.cmd_validators import check_date_cmd, check_length_cmd, check_mention_cmd, is_admin_command
+from utils.cmd_validators import admin_command, check_date_cmd, check_length_cmd, check_mention_cmd
 from utils.exceptions import DBUserPresenceOngoingdError
 from utils.logger import get_logger
 
@@ -48,32 +48,23 @@ class DiscordBot:
     def setup_cmds(self):
         
         @self.client.command(name="hello", description="Description à venir", guild=self.GUILD_ID)
-        @is_admin_command
+        @check_length_cmd(min=2, max=3)  
+        @check_mention_cmd(positions=[1]) 
+        @check_date_cmd(positions=[2]) 
+        @admin_command
         async def hello(interaction: discord.Interaction):
-            if not check_length_cmd(interaction, 2, 3):
-                get_logger().error("Size of command is wrong")
-                await interaction.channel.send("La taille de votre message n'est pas conforme")
-                return
-            if not check_mention_cmd(interaction, 1):
-                get_logger().error("Expected mention is not a mention")
-                await interaction.channel.send("La mention de l'utilisateur est manquante ou mal placée. Veuillez vous référer à la description")
-                return
-            if  len(interaction.message.content.split()) == 3 and not check_date_cmd(interaction, 2):
-                get_logger().error("Expected date is not a date")
-                await interaction.channel.send("Le deuxième argument s'il est spécifié doit être une date au format YYYY-MM-DD")
-                return
-            else:
-                date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
             user_mention = interaction.message.mentions[0]
             username = user_mention.name
             id = user_mention.id
             avatar = user_mention.avatar
-            if not date:
+            if len(interaction.message.content.split()) == 3:
                 date = interaction.message.content.split()[2]
                 date = datetime.strptime(date, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0)
+            else:
+                date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
             try:
                 if CommandHandler.add_user(id,username, avatar, date):
-                    await interaction.channel.send(f"L'utilisateur {username} a été rajouté avec une date d'arrivée {date}")
+                    await interaction.channel.send(f"L'utilisateur {username} a été rajouté avec une date d'arrivée {date.strftime('%Y-%m-%d')}")
                 else:
                     await interaction.channel.send(f"L'utilisateur {username} n'a pas put être créé.")
             except DBUserPresenceOngoingdError:

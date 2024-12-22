@@ -6,7 +6,7 @@ from discord import Interaction
 from functools import wraps
 from utils.logger import get_logger
 
-def is_admin_command(func):
+def admin_command(func):
     """Décorateur pour vérifier si l'utilisateur est administrateur."""
     @wraps(func)
     async def wrapper(interaction: Interaction, *args, **kwargs):
@@ -19,40 +19,61 @@ def is_admin_command(func):
     return wrapper
 
 
-def check_length_cmd(interaction: Interaction, min:int = None, max:int= None):
-    if min != None and len(interaction.message.content.split()) < min:
-        return False
-    if max != None and len(interaction.message.content.split()) > max:
-        print(max)
-        return False
-    return True
+def check_mention_cmd(positions: list):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(interaction: Interaction, *args, **kwargs):
+            words = interaction.message.content.split()
+            for position in positions:
+                if len(words) >= position + 1:
+                    mention = words[position]
+                    match = re.match(r'<@(\d+)>', mention)
+                    if match:
+                        member_id = int(match.group(1))
+                        member = interaction.guild.get_member(member_id)
+                        if member:
+                            continue
+                    await interaction.channel.send(f"Mention invalide ou manquante à la position {position + 1}.")
+                    return
+            return await func(interaction, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
-def check_mention_cmd(interaction: Interaction, position: int):
-    words = interaction.message.content.split()
-    if len(words) >= position + 1:
-        mention = words[position]
-        print(mention)
-        print(mention)
-        match = re.match(r'<@(\d+)>', mention)
 
-        if match:
-            member_id = int(match.group(1))
-            print(member_id)
-            # Vérifie si un membre avec cet ID existe dans le serveur
-            member = interaction.guild.get_member(member_id)
-            for mem in interaction.guild.members:
-                print(mem)
-            if member:
-                return True  # C'est une mention valide
-    return False  # Ce n'est pas une mention valide
+def check_date_cmd(positions: list):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(interaction: Interaction, *args, **kwargs):
+            words = interaction.message.content.split()
+            for position in positions:
+                if len(words) >= position + 1:
+                    try:
+                        datetime.strptime(words[position], "%Y-%m-%d")
+                        continue
+                    except ValueError:
+                        await interaction.channel.send(f"Date invalide à la position {position + 1}. Veuillez utiliser le format YYYY-MM-DD.")
+                        return
+            return await func(interaction, *args, **kwargs)
+        return wrapper
+    return decorator
 
-def check_date_cmd(interaction: Interaction, position:int):
-    if len(interaction.message.content.split()) >= position + 1:
-        try:
-            datetime.strptime(interaction.message.content.split()[position], "%Y-%m-%d")
-            return True
-        except ValueError:
-            return False
-    return False
+
+
+def check_length_cmd(min: int = None, max: int = None):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(interaction: Interaction, *args, **kwargs):
+            message_length = len(interaction.message.content.split())
+            if min is not None and message_length < min:
+                await interaction.channel.send(f"Le message doit contenir au moins {min} mots.")
+                return
+            if max is not None and message_length > max:
+                await interaction.channel.send(f"Le message ne doit pas contenir plus de {max} mots.")
+                return
+            return await func(interaction, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
             
