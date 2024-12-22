@@ -60,9 +60,6 @@ def add_user(user: dict) -> bool:
 
 def remove_user(user_id: str) -> bool:
     with get_session() as db_session:
-        # user = get_user(id)
-        # print("ici")
-        # print(user)
         db_session.query(User).filter(User.id==user_id).delete()
 
         try:

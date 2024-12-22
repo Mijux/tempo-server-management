@@ -74,9 +74,7 @@ class DiscordBot:
         #TODO: à supprimer, uniquement pour le dev
         @self.client.command(name="delete", description="Hello me", guild=self.GUILD_ID)
         async def delete(interaction: discord.Interaction):
-            if len(interaction.message.mentions) != 0:
-                print("id")
-                print(interaction.message.mentions[0].id)           
+            if len(interaction.message.mentions) != 0:         
                 CommandHandler.retire_user(interaction.message.mentions[0].id)
             await interaction.channel.send("coucou retire")
             return
