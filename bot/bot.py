@@ -2,16 +2,16 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from bot.discord_job import DiscordJob
+from command import CommandHandler
 
-class DiscordBot:
+
+class BotDiscord:
     def __init__(self, TOKEN_BOT, GUILD_ID):
         self.TOKEN_BOT = TOKEN_BOT
         self.GUILD_ID = discord.Object(id=GUILD_ID)       
         self.client = commands.Bot(command_prefix="!", intents=self.configure_bot()) 
         self.setup_events()  
         self.setup_cmds()   
-        self.worker = DiscordJob()  
     
     def configure_bot(self):
         """
@@ -44,8 +44,6 @@ class DiscordBot:
             await self.client.process_commands(message)
 
     def setup_cmds(self):
-        print("ici")
-        print(self.GUILD_ID.id)
         @self.client.command(name="hello", description="Hello me", guild=self.GUILD_ID)
         async def hello(interaction: discord.Interaction):
             await interaction.channel.send("coucou")
