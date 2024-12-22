@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import re
+from re import match
 from datetime import datetime
 from bot.command import CommandHandler
 from discord import Interaction
@@ -27,7 +27,7 @@ def check_mention_cmd(positions: list):
             for position in positions:
                 if len(words) >= position + 1:
                     mention = words[position]
-                    match = re.match(r'<@(\d+)>', mention)
+                    match = match(r'<@(\d+)>', mention)
                     if match:
                         member_id = int(match.group(1))
                         member = interaction.guild.get_member(member_id)

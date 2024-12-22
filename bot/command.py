@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import db.dao.user as UserOrm
+
+from db.dao.user import add_user, get_user, remove_user, update_user
 from db.dao.user_presence_status import UserPresenceStatusDao
 from utils.enums.role import RoleE
 
@@ -12,10 +13,10 @@ class CommandHandler:
                 "username": username,
                 "avatar": avatar.url if avatar != None else None
             }
-        if UserOrm.get_user(id) is None: 
-            UserOrm.add_user(user)
+        if get_user(id) is None: 
+            add_user(user)
         else:
-            UserOrm.update_user(user)           
+            update_user(user)           
         try:
             UserPresenceStatusDao.add_user_presence(id, username, date)
         except:
@@ -24,7 +25,7 @@ class CommandHandler:
     
     @staticmethod
     def is_admin_user(id: str):
-        user = UserOrm.get_user(id)
+        user = get_user(id)
         if user is not None: 
             role = RoleE.from_number(user.permission_level)
             return role == RoleE.ADMIN
@@ -33,4 +34,4 @@ class CommandHandler:
        
     @staticmethod
     def retire_user(id: str):
-        UserOrm.remove_user(id)
+        remove_user(id)
