@@ -5,3 +5,4 @@ schedule
 wakeonlan
 python-dotenv
 pytz
+discord

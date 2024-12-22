@@ -3,7 +3,7 @@
 from sqlalchemy import ForeignKey, Integer, Float
 from sqlalchemy.orm import Mapped, mapped_column
 
-from models.base import Base
+from db.models.base import Base
 
 
 class Consumption(Base):
@@ -16,4 +16,4 @@ class Consumption(Base):
     end_consumption_power: Mapped[float] = mapped_column(Float)
 
     def __repr__(self) -> str:
-        return f"Derogation(id_user={self.id_user},date={self.date})"
+        return f"Derogation(id_user={self.id_user},date={self.date},begin_hour={self.begin_hour},end_hour={self.end_hour},begin_consumption_power={self.begin_consumption_power},end_consumption_power={self.end_consumption_power})"

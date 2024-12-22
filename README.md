@@ -40,10 +40,10 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
 1. start bot system and works with several server grouped
     => ask @Mijux for information
 2. listen for next commands:
-    - `/hello <user_id> <arrival_date>`
+    - `/hello @mention <arrival_date>`
         - `desc`: Add a user to the server project
         - `admin-only`
-        - `user_id` **REQUIRED**: discord id user **present** on the server
+        - `@mention` **REQUIRED**: discord user name **present** on the server
         - `arrival_date` **OPTIONAL**: must be before or equal the current day and in **YYYY-MM-DD** format
     - `/bye yes`
         - `desc`: User that use this command leave the server
@@ -58,10 +58,22 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
         - `desc`: unset a derogation for the current user for next day.
     - `/power_on`
         - `desc`: on the red day, power on the server and automatically add derogation for the user
-    - `/get_state [all|global|year|month|week|yesterday|today]+`
+    - `/get_my_state [all|global|year|month|week|yesterday|today]+ `
         - `desc`: Return consumption and power price for temporalities chosen
-    - `/get_my_state <user_id> [all|global|year|month|week|yesterday|today]+`
+    - `/get_state <user_id> [all|global|year|month|week|yesterday|today]+`
         - `desc`: Return consumption and power price for temporalities chosen for the user specified
+    - `/get_derogation_state <user_id> [all|global|year|month|week|yesterday|today]+`
+        - `desc`: Return consumption and power price for temporalities chosen for the user specified only for derogation
+        - `arrival_date` **OPTIONAL**: if no user_id is specified, return the state for author of the message
+    - `/op @mention`
+        - `desc`: Add a user as admin
+        - `admin-only`
+        - `@mention` **REQUIRED**: discord user name **present** on the server
+    - `/deop @mention`
+        - `desc`: Set user as default role
+        - `admin-only`
+        - `@mention` **REQUIRED**: discord user name **present** on the server
+    
 
 ## LIFE CYCLE
 

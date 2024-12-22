@@ -17,6 +17,14 @@ class DBUserAlreadyExistsError(Exception):
 
         super().__init__(self.err_msg)
 
+class DBUserPresenceOngoingdError(Exception):
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+        self.err_msg = f"The user {self.username}({self.id}) already has an ongoing presence"
+
+        super().__init__(self.err_msg)
+
 
 class DBUserDoesNotExistError(Exception):
     def __init__(self, id):

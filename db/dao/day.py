@@ -4,9 +4,9 @@ from datetime import datetime, date, timedelta
 from os import getenv
 from sqlalchemy.exc import IntegrityError
 
-from api.tempo_day import TempoAPI
-from models.day import Day
-from models.pricing import Pricing
+from api.tempo import TempoAPI
+from db.models.day import Day
+from db.models.pricing import Pricing
 from utils.dbconn import get_session
 from utils.enums.day import DayE
 from utils.exceptions import (

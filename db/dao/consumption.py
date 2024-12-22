@@ -7,8 +7,8 @@ from pytz import timezone
 from api.tasmota import TastomaAPI, TastomaStubAPI
 from utils.dbconn import get_session
 from utils.logger import get_logger
-from models.consumption import Consumption
-from models.day import Day
+from db.models.consumption import Consumption
+from db.models.day import Day
 
 
 def init_consumption_table():

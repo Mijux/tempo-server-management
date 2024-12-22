@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import UUID
 from uuid import uuid4
 
-from models.base import Base
-from models.day import Day
+from db.models.base import Base
+from db.models.day import Day
 
 
 class Pricing(Base):
@@ -22,4 +22,4 @@ class Pricing(Base):
     days: Mapped[List["Day"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"Pricing(period={self.period},color={self.color},id={self.id},hc={self.hc},hp={self.hp})"
+        return f"Pricing(period={self.period},color={self.color},id={self.id},price_fullpeak={self.price_fullpeak},price_offpeak={self.price_offpeak},days={self.days})"

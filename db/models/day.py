@@ -5,9 +5,9 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import UUID
 
-from models.base import Base
-from models.derogation import Derogation
-from models.consumption import Consumption
+from db.models.base import Base
+from db.models.derogation import Derogation
+from db.models.consumption import Consumption
 
 
 class Day(Base):
@@ -20,4 +20,4 @@ class Day(Base):
     consumption: Mapped[List["Consumption"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"Day(date={self.date},id_pricing={self.id_pricing},consumption_offpeak={self.consumption_offpeak},consumption_fullpeak={self.consumption_fullpeak})"
+        return f"Day(date={self.date},id_pricing={self.id_pricing},consumption_offpeak={self.consumption},consumption_fullpeak={self.derogations})"
