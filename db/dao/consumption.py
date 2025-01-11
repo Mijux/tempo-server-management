@@ -3,6 +3,8 @@
 from datetime import datetime, timedelta
 from os import getenv
 from pytz import timezone
+from sqlalchemy.exc import NoResultFound
+
 
 from api.tasmota import TastomaAPI, TastomaStubAPI
 from utils.dbconn import get_session
@@ -104,3 +106,13 @@ def add_consumption(
             db_session.commit()
         except Exception as e:
             get_logger().error(e)
+
+
+def get_consumption(date: str):
+    with get_session() as db_session:
+        try:
+            return (
+                db_session.query(Consumption).filter(Consumption.date == date).first()
+            )
+        except NoResultFound:
+            return None

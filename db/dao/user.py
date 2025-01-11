@@ -14,16 +14,16 @@ from utils.exceptions import DBUserAlreadyExistsError, DBUserDoesNotExistError
 def get_user(id: str) -> dict:
     with get_session() as db_session:
         try:
-            return db_session.query(User).filter(User.id==id).first()
+            return db_session.query(User).filter(User.id == id).first()
         except NoResultFound:
             return None
-    return True
+
 
 def update_user(user_updated: dict) -> dict:
     with get_session() as db_session:
-            
+
         try:
-            user = db_session.query(User).filter(User.id==id)
+            user = db_session.query(User).filter(User.id == id)
         except NoResultFound:
             raise DBUserDoesNotExistError(user.get("id"))
         if user:
@@ -37,6 +37,7 @@ def update_user(user_updated: dict) -> dict:
             return None
 
     return True
+
 
 def add_user(user: dict) -> bool:
     with get_session() as db_session:
@@ -60,7 +61,7 @@ def add_user(user: dict) -> bool:
 
 def remove_user(user_id: str) -> bool:
     with get_session() as db_session:
-        db_session.query(User).filter(User.id==user_id).delete()
+        db_session.query(User).filter(User.id == user_id).delete()
 
         try:
             db_session.commit()
