@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
@@ -66,7 +66,7 @@ def leave_user(user_id: str) -> bool:
             if user_presence == None:
                 raise DBUserNotPresent(user_id)
             else :
-                user_presence.leave_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                user_presence.leave_date = datetime.now() + timedelta(days=1)
         else: 
             raise DBUserDoesNotExistError(user_id)
         try:
