@@ -46,14 +46,11 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
         - `admin-only`
         - `user_id` **REQUIRED** discord id user **present** on the server
     - `/set_derogation`
+        - `date` **OPTIONAL**: must be before or equal the current day and in **YYYY-MM-DD** format. 
         - `desc`: set a derogation for the current user for next day. Can't be executed after 6h00
     - `/unset_derogation`
         - `desc`: unset a derogation for the current user for next day.
-    - `/power_on`
-        - `desc`: on the red day, power on the server and automatically add derogation for the user
-    - `/get_my_state [all|global|year|month|week|yesterday|today]+ `
-        - `desc`: Return consumption and power price for temporalities chosen
-    - `/get_state <user_id> [all|global|year|month|week|yesterday|today]+`
+    - `/get_state  [all|global|year|month|week|yesterday|today] <user_id>`
         - `desc`: Return consumption and power price for temporalities chosen for the user specified
     - `/op @mention`
         - `desc`: Add a user as admin
