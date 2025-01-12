@@ -56,6 +56,14 @@ def delete_derogation(user_id: str, date: str) -> bool:
 
     return True
 
+def get_derogations() -> list[Derogation]:
+    with get_session() as db_session:
+
+        derogation: Derogation | None = (
+            db_session.query(Derogation).all()
+        )
+
+        return derogation
 
 def get_derogation(user_id: str, date: str) -> Derogation:
     with get_session() as db_session:
@@ -69,7 +77,7 @@ def get_derogation(user_id: str, date: str) -> Derogation:
         if not derogation:
             raise DBDerogationDoesNotExistError(user_id, date)
 
-        return Derogation
+        return derogation
 
 
 def get_derogation_per_date(date: str) -> list[Derogation] | None:

@@ -3,6 +3,7 @@
 from json import load
 from db.models.pricing import Pricing
 from os import getenv
+from sqlalchemy import UUID
 from sqlalchemy.exc import IntegrityError
 
 from utils.dbconn import get_session
@@ -53,3 +54,9 @@ def add_pricing(color: str, color_price: dict, period: str):
         except IntegrityError:
             db_session.rollback()
             raise DBPricingInsertionError(color, period)
+
+def get_pricing(id: UUID):
+    with get_session() as db_session:
+        pricing = db_session.query(Pricing).filter(Pricing.id == id).first()
+        
+        return pricing

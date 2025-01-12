@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from os import getenv
 from pytz import timezone
+from sqlalchemy import text
 from sqlalchemy.exc import NoResultFound
 
 
@@ -21,7 +22,7 @@ def init_consumption_table():
 
         days_to_fill: list[Day] = []
         for day in days:
-            if len(day.consumption) == 0:
+            if len(day.consumptions) == 0:
                 days_to_fill.append(day)
 
     total_power_to_dispatch: float = None

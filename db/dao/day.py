@@ -3,9 +3,11 @@
 from datetime import datetime, date, timedelta
 from os import getenv
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 
 from api.tempo import TempoAPI
 from db.models.day import Day
+from db.models.derogation import Derogation
 from db.models.pricing import Pricing
 from utils.dbconn import get_session
 from utils.enums.day import DayE
@@ -104,3 +106,22 @@ def has_derogation(date: str) -> bool:
                 return True
         else:
             raise DBDayDoesNotExistError(date)
+
+
+def get_day(date: str, with_derogations=False, with_consumption=False) -> Day | None:
+    with get_session() as db_session:
+        query = db_session.query(Day).filter(Day.date == date)
+        
+        if with_derogations:
+            query.options(joinedload(Day.derogations))
+        
+        if with_consumption:
+            query.options(joinedload(Day.consumptions))
+            
+        day = query.first()
+        
+        return day
+
+def get_days_with_derogations() -> list[Day]:
+    with get_session() as db_session:
+        return db_session.query(Day).join(Derogation, Day.date == Derogation.date).distinct().all()

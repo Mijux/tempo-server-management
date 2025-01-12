@@ -17,7 +17,7 @@ class Day(Base):
     id_pricing: Mapped[UUID] = mapped_column(ForeignKey("pricing.id"), nullable=False)
 
     derogations: Mapped[List["Derogation"]] = relationship()
-    consumption: Mapped[List["Consumption"]] = relationship()
+    consumptions: Mapped[List["Consumption"]] = relationship()
 
     def __repr__(self) -> str:
-        return f"Day(date={self.date},id_pricing={self.id_pricing},consumption_offpeak={self.consumption},consumption_fullpeak={self.derogations})"
+        return f"Day(date={self.date},id_pricing={self.id_pricing},derogations={self.derogations},consumptions={self.consumptions})"
