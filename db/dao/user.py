@@ -35,7 +35,7 @@ def update_user(user_updated: dict) -> dict:
             db_session.commit()
         except IntegrityError:
             db_session.rollback()
-            return None
+            return DBError
 
     return True
 
