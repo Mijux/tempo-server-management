@@ -6,13 +6,6 @@
 4. Run `.venv/bin/pip3 install -r requirements.txt`
 5. Ready to start ;) 
 
-# The problem
-
-![schema irl days vs tempo days](irlday_vs_tempoday.png)
-
-Normal persons and users works with day starting to 24H and finishing to 23h59. But, Tempo system works with day starting to 22h and finishing to 21h59. The question is how to operate to handle this ?
-
-The following is proposition and not the solution
 
 ## The user is not dumb
 
@@ -48,7 +41,7 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
     - `/bye yes`
         - `desc`: User that use this command leave the server
         - `yes` **REQUIRED**: force user to confirm to avoid error when using the command
-    - `/bye <user_id>`
+    - `/bye `@mention``
         - `desc`: Kick the user specified from the server project
         - `admin-only`
         - `user_id` **REQUIRED** discord id user **present** on the server
