@@ -6,7 +6,7 @@ from bot.command import CommandHandler
 
 from datetime import datetime
 from utils.cmd_validators import admin_command, check_date_cmd, check_length_cmd, check_mention_cmd
-from utils.exceptions import DBUserPresenceOngoingdError
+from utils.exceptions import DBError, DBUserAlreadyExistsError, DBUserDoesNotExistError, DBUserNotPresent, DBUserPresenceOngoingdError
 from utils.logger import get_logger
 
 
@@ -70,6 +70,44 @@ class DiscordBot:
             except DBUserPresenceOngoingdError:
                 await interaction.channel.send(f"L'utilisateur {username} est déjà en cours de présence.")
             return False
+        
+        @self.client.command(name="bye", description="Description à venir", guild=self.GUILD_ID)
+        @check_length_cmd(min=2, max=2)  
+        async def bye(interaction: discord.Interaction):
+            word = interaction.message.content.split()[1]
+            try:
+                username = ''
+                if word == 'yes':
+                    username = interaction.message.author.name
+                    await bye_myself(interaction.message.author.id)
+                else:
+                    username = interaction.message.mentions[0].name
+                    await bye_admin(interaction)
+                await interaction.channel.send(f"L'utilisateur {username} a bien été retiré.")
+            except DBUserNotPresent as e: 
+                await interaction.channel.send(f"L'utilisateur {username} n'est plus présent.")
+            except DBUserDoesNotExistError as e: 
+                await interaction.channel.send(f"L'utilisateur {username} n'existe pas.")
+            except DBError as e: 
+                await interaction.channel.send(f"Une erreur est survenue.")
+
+           
+
+            return False
+        
+        @check_mention_cmd(positions=[1]) 
+        @admin_command
+        async def bye_admin(interaction: discord.Interaction):
+            user_mention = interaction.message.mentions[0]
+            user_id = user_mention.id
+            return CommandHandler.leave_user(user_id)
+
+        
+
+        async def bye_myself(user_id: str):
+            return CommandHandler.leave_user(user_id)
+            
+
         
         #TODO: à supprimer, uniquement pour le dev
         @self.client.command(name="delete", description="Hello me", guild=self.GUILD_ID)

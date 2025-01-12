@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from db.dao.user import add_user, get_user, remove_user, update_user
+from db.dao.user import add_user, get_user, remove_user, update_user, leave_user
 from db.dao.user_presence_status import UserPresenceStatusDao
 from utils.enums.role import RoleE
 
@@ -33,5 +33,9 @@ class CommandHandler:
             return False
        
     @staticmethod
-    def retire_user(id: str):
-        remove_user(id)
+    def retire_user(user_id: str):
+        remove_user(user_id)
+    
+    @staticmethod
+    def leave_user(user_id: str):
+        return leave_user(user_id)

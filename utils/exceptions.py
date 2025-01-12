@@ -34,6 +34,14 @@ class DBUserDoesNotExistError(Exception):
         super().__init__(self.err_msg)
 
 
+class DBUserNotPresent(Exception):
+    def __init__(self, id):
+        self.id = id
+        self.err_msg = f"The user with id {self.id} is not actually present"
+
+        super().__init__(self.err_msg)
+
+
 class DBPricingInsertionError(Exception):
     def __init__(self, color, period):
         self.color = color

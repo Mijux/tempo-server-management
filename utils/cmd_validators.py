@@ -27,9 +27,9 @@ def check_mention_cmd(positions: list):
             for position in positions:
                 if len(words) >= position + 1:
                     mention = words[position]
-                    match = match(r'<@(\d+)>', mention)
-                    if match:
-                        member_id = int(match.group(1))
+                    isMatch = match(r'<@(\d+)>', mention)
+                    if isMatch:
+                        member_id = int(isMatch.group(1))
                         member = interaction.guild.get_member(member_id)
                         if member:
                             continue
