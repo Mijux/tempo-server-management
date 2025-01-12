@@ -55,9 +55,6 @@ Days start at 22h with the offpeak period, where power price is 0.1568 €/kWh. 
         - `desc`: Return consumption and power price for temporalities chosen
     - `/get_state <user_id> [all|global|year|month|week|yesterday|today]+`
         - `desc`: Return consumption and power price for temporalities chosen for the user specified
-    - `/get_derogation_state <user_id> [all|global|year|month|week|yesterday|today]+`
-        - `desc`: Return consumption and power price for temporalities chosen for the user specified only for derogation
-        - `arrival_date` **OPTIONAL**: if no user_id is specified, return the state for author of the message
     - `/op @mention`
         - `desc`: Add a user as admin
         - `admin-only`

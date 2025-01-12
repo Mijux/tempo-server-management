@@ -6,6 +6,7 @@ from bot.command import CommandHandler
 
 from datetime import datetime
 from utils.cmd_validators import admin_command, check_date_cmd, check_length_cmd, check_mention_cmd
+from utils.enums.role import RoleE
 from utils.exceptions import DBError, DBUserAlreadyExistsError, DBUserDoesNotExistError, DBUserNotPresent, DBUserPresenceOngoingdError
 from utils.logger import get_logger
 
@@ -71,6 +72,42 @@ class DiscordBot:
                 await interaction.channel.send(f"L'utilisateur {username} est déjà en cours de présence.")
             return False
         
+        @self.client.command(name="op", description="Description à venir", guild=self.GUILD_ID)
+        @check_length_cmd(min=2, max=2)  
+        @check_mention_cmd(positions=[1]) 
+        @admin_command
+        async def op(interaction: discord.Interaction):
+            user_mention = interaction.message.mentions[0]
+            username = user_mention.name
+            user_id = user_mention.id
+            try:
+                if CommandHandler.change_role_user(user_id,RoleE.ADMIN):
+                    await interaction.channel.send(f"L'utilisateur {username} a été ajouté aux administrateurs.")
+            except DBUserDoesNotExistError:
+                await interaction.channel.send(f"L'utilisateur {username} n'existe pas.")
+            except DBError:
+                await interaction.channel.send(f"Une erreur est survenue.")
+            
+            return False
+        
+        @self.client.command(name="deop", description="Description à venir", guild=self.GUILD_ID)
+        @check_length_cmd(min=2, max=2)  
+        @check_mention_cmd(positions=[1]) 
+        @admin_command
+        async def deop(interaction: discord.Interaction):
+            user_mention = interaction.message.mentions[0]
+            username = user_mention.name
+            user_id = user_mention.id
+            try:
+                if CommandHandler.change_role_user(user_id,RoleE.DEFAULT):
+                    await interaction.channel.send(f"L'utilisateur {username} est retiré des administrateurs.")
+            except DBUserDoesNotExistError:
+                await interaction.channel.send(f"L'utilisateur {username} n'existe pas.")
+            except DBError:
+                await interaction.channel.send(f"Une erreur est survenue.")
+            
+            return False
+        
         @self.client.command(name="bye", description="Description à venir", guild=self.GUILD_ID)
         @check_length_cmd(min=2, max=2)  
         async def bye(interaction: discord.Interaction):
@@ -109,13 +146,6 @@ class DiscordBot:
             
 
         
-        #TODO: à supprimer, uniquement pour le dev
-        @self.client.command(name="delete", description="Hello me", guild=self.GUILD_ID)
-        async def delete(interaction: discord.Interaction):
-            if len(interaction.message.mentions) != 0:         
-                CommandHandler.retire_user(interaction.message.mentions[0].id)
-            await interaction.channel.send("coucou retire")
-            return
         
     def run(self):
         self.client.run(self.TOKEN_BOT)
