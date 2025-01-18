@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from datetime import datetime
+from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
@@ -9,7 +10,11 @@ from db.models.user import User
 from db.models.user_presence_status import UserPresenceStatus
 from utils.dbconn import get_session
 
-from utils.exceptions import DBUserAlreadyExistsError, DBUserDoesNotExistError, DBUserPresenceOngoingdError
+from utils.exceptions import (
+    DBUserAlreadyExistsError,
+    DBUserDoesNotExistError,
+    DBUserPresenceOngoingdError,
+)
 
 
 class UserPresenceStatusDao:
@@ -17,16 +22,24 @@ class UserPresenceStatusDao:
     @staticmethod
     def add_user_presence(id: str, username: str, date: str) -> dict:
         with get_session() as db_session:
-            if db_session.query(UserPresenceStatus).filter(UserPresenceStatus.id_user==id, UserPresenceStatus.leave_date==None).first() != None:          
+            if (
+                db_session.query(UserPresenceStatus)
+                .filter(
+                    UserPresenceStatus.id_user == id,
+                    UserPresenceStatus.leave_date == None,
+                )
+                .first()
+                != None
+            ):
                 raise DBUserPresenceOngoingdError(id, username)
 
             try:
                 user_presence: UserPresenceStatus = UserPresenceStatus(
-                    id_user=id, 
+                    id_user=id,
                     arrival_date=date,
                 )
                 db_session.add(user_presence)
-                
+
                 try:
                     db_session.commit()
                 except IntegrityError:
@@ -34,3 +47,25 @@ class UserPresenceStatusDao:
             except NoResultFound:
                 return None
         return True
+
+    @staticmethod
+    def get_user_presences(
+        user_id: str, start_date: str | None = None, end_date: str | None = None
+    ) -> list[UserPresenceStatus]:
+        with get_session() as db_session:
+            q = db_session.query(UserPresenceStatus).filter(
+                UserPresenceStatus.id_user == user_id
+            )
+
+            if end_date is not None:
+                q = q.filter(UserPresenceStatus.arrival_date <= end_date)
+
+            if start_date is not None:
+                q = q.filter(
+                    or_(
+                        UserPresenceStatus.leave_date.is_(None),
+                        UserPresenceStatus.leave_date >= start_date,
+                    )
+                )
+
+            return q.all()

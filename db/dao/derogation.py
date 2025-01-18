@@ -56,14 +56,14 @@ def delete_derogation(user_id: str, date: str) -> bool:
 
     return True
 
+
 def get_derogations() -> list[Derogation]:
     with get_session() as db_session:
 
-        derogation: Derogation | None = (
-            db_session.query(Derogation).all()
-        )
+        derogation: Derogation | None = db_session.query(Derogation).all()
 
         return derogation
+
 
 def get_derogation(user_id: str, date: str) -> Derogation:
     with get_session() as db_session:
@@ -93,12 +93,22 @@ def get_derogation_per_date(date: str) -> list[Derogation] | None:
         return derogations
 
 
-def get_derogation_per_user(user_id: str) -> list[Derogation] | None:
+def get_derogation_per_user(
+    user_id: str,
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> list[Derogation] | None:
     with get_session() as db_session:
 
-        derogations: Derogation | None = (
-            db_session.query(Derogation).filter(Derogation.id_user == user_id).all()
-        )
+        q = db_session.query(Derogation).filter(Derogation.id_user == user_id)
+
+        if start_date:
+            q = q.filter(Derogation.date >= start_date)
+
+        if end_date:
+            q = q.filter(Derogation.date <= end_date)
+
+        derogations: list[Derogation] = q.all()
 
         if not derogations or len(derogations) == 0:
             raise DBDerogationDoesNotExistError(user_id=user_id)

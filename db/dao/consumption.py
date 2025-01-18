@@ -117,3 +117,13 @@ def get_consumption(date: str):
             )
         except NoResultFound:
             return None
+
+
+def get_consumption_by_period(start_date, end_date=None) -> list[Consumption]:
+    with get_session() as db_session:
+        query = db_session.query(Consumption).join(Day, Day.date == Consumption.date).filter(Consumption.date >= start_date)
+        
+        if end_date:
+            query = query.filter(Consumption.date <= end_date)
+            
+        return query.all()
